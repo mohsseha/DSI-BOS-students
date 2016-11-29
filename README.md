@@ -1,2 +1,5 @@
 # DSI-BOS-students
-GA Boston Data Science 
+
+
+## List of People: 
+- Husain Al-Mohssen -> mohsseha
