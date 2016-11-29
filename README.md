@@ -1,6 +1,8 @@
 # DSI-BOS-students
 
 
-## List of People: 
+## List of People:
 - Husain Al-Mohssen -> mohsseha
-Christopher Madsen -> cjmadsen
+- Christopher Madsen -> cjmadsen
+- Teresa Borcuch -> teresaborcuch
+- Nathan Mitchell -> ntmitchell
