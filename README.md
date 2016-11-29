@@ -1,5 +1,6 @@
 # DSI-BOS-students
 
 
-## List of People: 
+## List of People:
 - Husain Al-Mohssen -> mohsseha
+- Steve Shepherd -> dfoshep
