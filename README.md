@@ -3,6 +3,7 @@
 
 ## List of People:
 - Husain Al-Mohssen -> mohsseha
+- Tim Hogan -> tmh8195
 - Antonio Pasciuto -> apasciuto
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
