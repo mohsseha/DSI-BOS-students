@@ -3,10 +3,14 @@
 
 ## List of People:
 - Husain Al-Mohssen -> mohsseha
-<<<<<<< HEAD
+- Antonio Pasciuto -> apasciuto
 - Steve Shepherd -> dfoshep
-=======
 - Greg MacLennan -> gmaclenn
 - Teresa Borcuch -> teresaborcuch
 - Nathan Mitchell -> ntmitchell
->>>>>>> 1cb1f79b38b3cbb830f276393d36c31346325b32
+- Steve Shepherd -> dfoshep
+- Greg MacLennan -> gmaclenn
+- Teresa Borcuch -> teresaborcuch
+- Nathan Mitchell -> ntmitchell
+- Karthik Venkataraman -> karthik-33
+- James Wedell -> wedelljd
