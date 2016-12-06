@@ -9,13 +9,17 @@
 | Tim Hogan           | tmh8195     | |
 | Pat Parker-Roach    | pparker-roach | https://pparker-roach.github.io
 - Antonio Pasciuto -> apasciuto
+=======
+|Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    |
+|Antonio Pasciuto | apasciuto|
+|Steve Shepherd | dfoshep| |
+|Greg MacLennan |gmaclenn| |
+|Teresa Borcuch|teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|
+| Antonio Pasciuto | apasciuto| |
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
-- Teresa Borcuch -> teresaborcuch
-| Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
-- Steve Shepherd -> dfoshep
-- Greg MacLennan -> gmaclenn
-- Teresa Borcuch -> teresaborcuch
-- Nathan Mitchell -> ntmitchell
+- Teresa Borcuch -> teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|
+
+- Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
 - James Wedell -> wedelljd
-- Pat Parker-Roach -> pproach 
+- Pat Parker-Roach -> pproach
