@@ -13,7 +13,7 @@
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
 - Teresa Borcuch -> teresaborcuch
-- Nathan Mitchell -> ntmitchell
+| Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
 - Teresa Borcuch -> teresaborcuch
