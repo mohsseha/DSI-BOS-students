@@ -16,7 +16,6 @@
 - Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
-- Teresa Borcuch -> teresaborcuch
 - Nathan Mitchell -> ntmitchell
 - James Wedell -> wedelljd
 - Pat Parker-Roach -> pproach -> https://pparker-roach.github.io
