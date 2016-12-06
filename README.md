@@ -11,7 +11,7 @@
 | Pat Parker-Roach    | pparker-roach | https://pparker-roach.github.io
 |Greg MacLennan       | gmaclenn    |[gmaclenn](https://gmaclenn.github.io)
 |Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    |
-|Antonio Pasciuto | apasciuto|
+|Antonio Pasciuto     | apasciuto   |[apasciuto](https://apasciuto.github.io)  |
 |Steve Shepherd | dfoshep| |
 |Teresa Borcuch|teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|
 - Steve Shepherd -> dfoshep
