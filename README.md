@@ -10,11 +10,10 @@
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
 - Teresa Borcuch -> teresaborcuch
-- Nathan Mitchell -> ntmitchell
+| Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
 - Teresa Borcuch -> teresaborcuch
 - Nathan Mitchell -> ntmitchell
 - Karthik Venkataraman -> karthik-33
 - James Wedell -> wedelljd
-- DK Kim -> dk13093
