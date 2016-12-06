@@ -2,19 +2,22 @@
 
 
 ## Participants:
-|Name                 | Work Folder | webpage                               |
-|---------------------|-------------|--------------------------------------:|
-|Husain Al-Mohssen    | mohsseha    |[mohsseha](https://mohsseha.github.io) |
-| Tim Hogan | tmh8195| |
-|DK Kim | dk13093 | (https://dk13093.github.io)
+<<<<<<< HEAD
+|Name                 | Work Folder | webpage                                  |
+|---------------------|-------------|--------------------------------------:   |
+|Husain Al-Mohssen    | mohsseha    |[mohsseha](https://mohsseha.github.io)    |
+|Karthik Venkataraman | karthik-33  |[karthik-33](https://karthik-33.github.io)|
+|DK Kim               | dk13093     |[dk13093] (https://dk13093.github.io)
+| Tim Hogan           | tmh8195     | |
+
 - Antonio Pasciuto -> apasciuto
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
-- Teresa Borcuch -> teresaborcuch
-| Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
+- Teresa Borcuch -> teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|
+- Nathan Mitchell   | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
 - Teresa Borcuch -> teresaborcuch
 - Nathan Mitchell -> ntmitchell
-- Karthik Venkataraman -> karthik-33
 - James Wedell -> wedelljd
+- Pat Parker-Roach -> pproach -> https://pparker-roach.github.io
