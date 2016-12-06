@@ -1,8 +1,10 @@
 # DSI-BOS-students
 
 
-## List of People:
-- Husain Al-Mohssen -> mohsseha
+## Participants:
+|Name                 | Work Folder | webpage                            |
+|---------------------|-------------|-----------------------------------:|
+|Husain Al-Mohssen    | mohsseha    |[mohsseha]https://mohsseha.github.io|
 - Tim Hogan -> tmh8195
 - Antonio Pasciuto -> apasciuto
 - Steve Shepherd -> dfoshep
