@@ -6,6 +6,7 @@
 |---------------------|-------------|--------------------------------------:|
 |Husain Al-Mohssen    | mohsseha    |[mohsseha](https://mohsseha.github.io) |
 | Tim Hogan | tmh8195| |
+|DK Kim | dk13093 | (https://dk13093.github.io)
 - Antonio Pasciuto -> apasciuto
 - Steve Shepherd -> dfoshep
 - Greg MacLennan -> gmaclenn
