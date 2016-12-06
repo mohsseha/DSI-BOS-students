@@ -8,7 +8,7 @@
 |Karthik Venkataraman | karthik-33  |[karthik-33](https://karthik-33.github.io)|
 | Tim Hogan           | tmh8195     | |
 - Antonio Pasciuto -> apasciuto
-=======
+|Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    |
 |Antonio Pasciuto | apasciuto|
 |Steve Shepherd | dfoshep| |
 |Teresa Borcuch|teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|
