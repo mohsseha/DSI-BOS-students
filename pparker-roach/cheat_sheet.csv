@@ -5,4 +5,5 @@ Pandas,reading in a csv file with wrong encoding for Win 10,encoding parameter f
 python/pandas,allows you to save a dataframe as a csv file for future updating,DataFrame.to_csv(),"cheat_sheet.to_csv(cheat_sheet.csv, index=False)"
 Pandas,reading in a csv file with wrong encoding for Win 10,encoding parameter for pd.read_CSV,encoding = 'iso-8859-1' or encoding = 'cp1252' or encoding = 'latin1'
 Jupyter,allows you to save notebooks as .py and or html files,http://protips.maxmasnick.com/ipython-notebooks-automatically-export-py-and-html,this notebook
-python/pandas,different ways to index pandas dataframes and series,".loc, .iloc, .ix",Loc works on labels in the index. â€“ iloc works on the positions in the index (so it only takes integers). â€“ ix usually tries to behave like loc but falls back to behaving like iloc if the label is not in the index.
+python/pandas,different ways to index pandas dataframes and series,".loc, .iloc, .ix",Loc works on labels in the index. – iloc works on the positions in the index (so it only takes integers). – ix usually tries to behave like loc but falls back to behaving like iloc if the label is not in the index.
+Statistics,basic intro to linear regression,[5~https://www.youtube.com/watch?v=I8Dr1OGUdZQ,Watch it and the next video on least squares regression
