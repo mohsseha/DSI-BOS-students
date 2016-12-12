@@ -971,24 +971,24 @@ There are 2 categories of questions that can be visualized using graphs on the c
 
 ##### 3.1 Who and what in the top 100?
 
-#### Higher, by Creed, spent the most time (57 weeks) in the top 100
-<img src="Weeksbytrack.png",width=250,height=200>
-#### Creed's tracks spent the most time in total (104 weeks) in the top 100
-<img src="Weeksbyartist.png",width=250,height=200>
+Higher, by Creed, spent the most time (57 weeks) in the top 100
+<img src="Weeksbytrack.png",width=350,height=250>
+Creed's tracks spent the most time in total (104 weeks) in the top 100
+<img src="Weeksbyartist.png",width=350,height=250>
 
 ##### 3.2 Does anything correlate with number of weeks spent in top 100?
 
-#### There is no correlation between track length and number of weeks
-<img src="Weeksbytracklength.png",width=250,height=200>
-#### While tracks that entered in Q2 and Q3 of 1999 seem to have stayed longer in the top 100, very few tracks [less than 5 out of 317 total] entered the billboard during that period. More data [>30 tracks] from that time period would be helpful to further evaluate this hypothesis.
-<img src="Weeksbydate.png",width=250,height=200>
-#### Average time spent in the top 100 seems to be genre dependent, but most genres did not have enough tracks (samples). It may be interesting to explore whether average number of weeks for Rock is siginificantly different than Country or Rap
-<img src="Weeksbygenre.png",width=250,height=200>
+There is no correlation between track length and number of weeks
+<img src="Weeksbytracklength.png",width=350,height=250>
+While tracks that entered in Q2 and Q3 of 1999 seem to have stayed longer in the top 100, very few tracks [less than 5 out of 317 total] entered the billboard during that period. More data [>30 tracks] from that time period would be helpful to further evaluate this hypothesis.
+<img src="Weeksbydate.png",width=350,height=250>
+Average time spent in the top 100 seems to be genre dependent, but most genres did not have enough tracks (samples). It may be interesting to explore whether average number of weeks for Rock is siginificantly different than Country or Rap
+<img src="Weeksbygenre.png",width=350,height=250>
 
 ## Step 4: Problem Statement
 
 
-#### Determine whether the average time spent by a Rock track in the top 100 is significantly different than the average time spent by a Country track or a Rap track.
+Determine whether the average time spent by a Rock track in the top 100 is significantly different than the average time spent by a Country track or a Rap track.
 
 ## Step 5: Approach
 
@@ -1006,13 +1006,13 @@ There are 2 categories of questions that can be visualized using graphs on the c
 ##### 5.1 and 5.2: Plot distributions. See if they are normally distributed
 
 
-#### None of the distributions is normal. All of them are skewed positive. Assume means are normally distributed since sample size is >50
+None of the distributions is normal. All of them are skewed positive. Assume means are normally distributed since sample size is >50
 #### Rock
-<img src="Rock.png",width=200,height=75>
+<img src="Rock.png",width=300,height=125>
 #### Country
-<img src="Country.png",width=200,height=75>
+<img src="Country.png",width=300,height=125>
 #### Rap
-<img src="Rap.png",width=200,height=75>
+<img src="Rap.png",width=300,height=125>
 
 ##### 5.3: Create arrays of number of weeks for Rock, Country and Rap
 
@@ -1049,7 +1049,7 @@ print("P-values ... Rock-Country: {}, Rock-Rap: {}, Country-Rap: {}".
 
 ### Conclusions 
 
-### Rock tracks spent higher time in the top 100 on average (18.9 weeks) than Country tracks (16.2 weeks) or Rap tracks (14.4 weeks), circa 2000. Country tracks and Rap tracks spent the same amount of time in the top 100. It would be interesting to see if this trend holds true for other years. It would also be interesting to see if the billboard Top 100 is biased towards Rock tracks (radio stations playing more Rock to cater to certain audiences, for example), resulting in these trends.
+Rock tracks spent higher time in the top 100 on average (18.9 weeks) than Country tracks (16.2 weeks) or Rap tracks (14.4 weeks), circa 2000. Country tracks and Rap tracks spent the same amount of time in the top 100. It would be interesting to see if this trend holds true for other years. It would also be interesting to see if the billboard Top 100 is biased towards Rock tracks (radio stations playing more Rock to cater to certain audiences, for example), resulting in these trends.
 
 ## Step 6: Blog Post
 
