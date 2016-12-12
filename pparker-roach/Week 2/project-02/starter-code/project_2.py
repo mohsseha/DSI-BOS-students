@@ -6,10 +6,17 @@
 # 
 # ##### Load your data in using Pandas 
 
-# In[2]:
+# In[128]:
 
+import numpy  as np
 import pandas as pd
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+get_ipython().magic('matplotlib inline')
+
 billboard = pd.read_csv('~/Documents/DSI-BOS-students/pparker-roach/Week 2/project-02/assets/billboard.csv', encoding='iso-8859-1')
+
+pd.set_option('display.max_rows', 500)
 
 
 # #### Start to explore. Save all of your early exploration code here and include in your final submission.
@@ -23,7 +30,7 @@ billboard = pd.read_csv('~/Documents/DSI-BOS-students/pparker-roach/Week 2/proje
 #   * how does all of the above relate to genre?
 #   * how does all of the above relate to season of the year?
 
-# In[9]:
+# In[129]:
 
 print(billboard.head())
 
@@ -34,7 +41,7 @@ print(billboard.head())
 #   
 #   df1.loc[:,'f'] = p.Series(np.random.randn(sLength), index=df1.index)
 
-# In[34]:
+# In[174]:
 
 # for each row (artist/track combo) count the number of weeks it was on the chart,
 # place it in a list and then find the mean of that list
@@ -42,32 +49,87 @@ print(billboard.head())
 billboard_index = billboard.index.values.tolist()
 billboard_columns = billboard.columns
 
+#the number of weeks a track stayed on the list
 weeks_on_list = []
+#a list of the week on the list containing thier rating for each week
+weeks_list = []
+#the highest point on the list that a title reached during its tenure on the list
+high_point_list = []
 
+#the following adds a new column onto billboard called "Weeks List" that contains all of the weeks on billboard
+#preserving the ranking, but replacing nan's with 0's
 for index, row in billboard.iterrows():
     count = 0
+    weeks_on_list.append(row['x1st.week':'x76th.week'].notnull().sum()) 
     notnull = row['x1st.week':'x76th.week'].notnull()
-    weeks = row['x1st.week':'x76th.week']
-    weeks_on_list.append(weeks[notnull].count())
-
+    weeks_list.append(row['x1st.week':'x76th.week'].fillna(0))
+    high_point_list.append(row['x1st.week':'x76th.week'].max())
+    
+    
+billboard["Weeks List"] = weeks_list
+billboard['Total Weeks'] = weeks_on_list
+billboard['High Point'] = high_point_list
 
 weeks_on_list = pd.Series(weeks_on_list)
-#for index, row in billboard.iterrows():
-    
-    #print(billboard.loc[index,7:col])
+high_point_list = pd.Series(high_point_list)
+
 weeks_on_list_mean = weeks_on_list.mean()
 weeks_on_list_median = weeks_on_list.median()
 weeks_on_list_mode = weeks_on_list.mode()
 weeks_on_list_std = weeks_on_list.std()
 weeks_on_list_min = weeks_on_list.min()
 weeks_on_list_max = weeks_on_list.max()
-billboard["Weeks on List"] = weeks_on_list
+
+high_point_list_mean = high_point_list.mean()
+high_point_list_median = high_point_list.median()
+high_point_list_mode = high_point_list.mode()
+high_point_list_std = high_point_list.std()
+high_point_list_min = high_point_list.min()
+high_point_list_max = high_point_list.max()
 
 print("The average number of weeks a track spent on the Billboard list is ", weeks_on_list_mean)
 print("The median number of weeks is ", weeks_on_list_median)
 print("The mode is ", weeks_on_list_mode )
 print("The standard deviation is ", weeks_on_list_std)
-print("The range is ", weeks_on_list_max - weeks_on_list_mean)
+print("The range is the high -{}- minus the low -{} = {}".format(weeks_on_list_max, weeks_on_list_min, high_point_list_max - high_point_list_min))
+print()
+print("The average high point a track achieved on the Billboard list is ", high_point_list_mean)
+print("The median high point is ", high_point_list_median)
+print("The mode is ", high_point_list_mode )
+print("The standard deviation is ", high_point_list_std)
+print("The range is the high -{}- minus the low -{} = {}".format(high_point_list_max,high_point_list_min, weeks_on_list_max - weeks_on_list_min))
+
+
+fig = plt.figure()
+for i in range(8):
+    i = i+1
+    ax1 = fig.add_subplot(1,8,i)
+    ax1 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax2 = fig.add_subplot(1,8,i)
+    ax2 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax3 = fig.add_subplot(1,8,i)
+    ax3 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax4 = fig.add_subplot(1,8,i)
+    ax4 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax5 = fig.add_subplot(1,8,i)
+    ax5 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax6 = fig.add_subplot(1,8,i)
+    ax6 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax7 = fig.add_subplot(1,8,i)
+    ax7 = billboard.ix[i]["Weeks List"].plot.hist()
+    ax8 = fig.add_subplot(1,8,i)
+    ax8 = billboard.ix[i]["Weeks List"].plot.hist()
+    
+
+
+# In[ ]:
+
+
+
+
+# In[ ]:
+
+
 
 
 # In[ ]:
