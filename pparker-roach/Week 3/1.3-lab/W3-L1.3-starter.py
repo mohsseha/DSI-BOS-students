@@ -12,7 +12,7 @@
 # 
 # First let's load and explore our dataset, then we'll see how to use statsmodels. We'll use `sklearn` to provide the data.
 
-# In[24]:
+# In[31]:
 
 get_ipython().magic('matplotlib inline')
 from matplotlib import pyplot as plt
@@ -25,7 +25,7 @@ print (data.DESCR)
 
 # Let's take a minute to see what the data looks like.
 
-# In[25]:
+# In[32]:
 
 print (data.feature_names)
 print (data.data[0])
@@ -34,7 +34,7 @@ print (data.target[0])
 
 # Scikit-learn has already split off the house value data into the target variable. Let's see how to build a linear regression. First let's put the data into a data frame for convenience, and do a quick check to see that everything loaded correctly.
 
-# In[29]:
+# In[33]:
 
 import numpy as np
 import pandas as pd
@@ -51,7 +51,7 @@ print (targets.head())
 # 
 # Note that statsmodels does not add a constant term by default, so you need to use `X = sm.add_constant(X)` if you want a constant term.
 
-# In[18]:
+# In[34]:
 
 import statsmodels.api as sm
 
@@ -72,14 +72,14 @@ model.summary()
 # 
 # Let's plot the predictions versus the actual values.
 
-# In[5]:
+# In[54]:
 
 # Plot the model
 plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
 plt.xlabel("Predicted Values from RM")
 plt.ylabel("Actual Values MEDV")
 plt.show()
-print "MSE:", model.mse_model
+print ("MSE:", model.mse_model)
 
 
 # **Check**: How does this plot relate to the model? In other words, how are the independent variable (RM) and dependent variable ("MEDV") incorporated?
@@ -88,7 +88,7 @@ print "MSE:", model.mse_model
 # 
 # Let's try it with a constant term now.
 
-# In[6]:
+# In[36]:
 
 ## With a constant
 
@@ -106,7 +106,7 @@ predictions = model.predict(X)
 model.summary()
 
 
-# In[7]:
+# In[37]:
 
 # Plot the model
 plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
@@ -123,7 +123,7 @@ print "MSE:", model.mse_model
 # Next let's try a different predictor, `LSTAT`.
 # 
 
-# In[8]:
+# In[38]:
 
 X = df[["LSTAT"]]
 y = targets["MEDV"]
@@ -136,19 +136,19 @@ predictions = model.predict(X)
 model.summary()
 
 
-# In[9]:
+# In[55]:
 
 # Plot the model
 plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
 plt.xlabel("Predicted Values from LSTAT")
 plt.ylabel("Actual Values MEDV")
 plt.show()
-print "MSE:", model.mse_model
+print ("MSE:", model.mse_model)
 
 
 # Finally, let's fit a model using both `RM` and `LSTAT`.
 
-# In[10]:
+# In[40]:
 
 X = df[["RM", "LSTAT"]]
 y = targets["MEDV"]
@@ -159,23 +159,35 @@ predictions = model.predict(X)
 model.summary()
 
 
-# In[11]:
+# In[42]:
 
 # Plot the model
 plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
 plt.xlabel("Predicted Values from RM and LSTAT")
 plt.ylabel("Actual Values MEDV")
 plt.show()
-print "MSE:", model.mse_model
+print ("MSE:", model.mse_model)
 
 
 # ## Comparing the models
 # 
 # A perfect fit would yield a straight line when we plot the predicted values versus the true values. We'll quantify the goodness of fit soon.
 # 
-# ### Exercise
+# ### Exercis
+# X = df[['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']]
+# plte
 # 
 # Run the fit on all the variables with `X = df`. Did this improve the fit versus the previously tested variable combinations? (Use mean squared error).
+
+# In[43]:
+
+
+X = df[['CRIM', 'ZN', 'INDUS', 'CHAS', 'NOX', 'RM', 'AGE', 'DIS', 'RAD', 'TAX', 'PTRATIO', 'B', 'LSTAT']]
+plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
+plt.xlabel("Predicted Values from all determinate variable")
+plt.ylabel("Actual Values MEDV")
+plt.show()
+
 
 # ## Preparing data with Patsy
 # 
@@ -183,7 +195,7 @@ print "MSE:", model.mse_model
 # 
 # Let's look at a few examples. To get the `X` and `y` matrices for the previous example, try the following.
 
-# In[12]:
+# In[44]:
 
 import patsy
 
@@ -191,34 +203,34 @@ import patsy
 df["MEDV"] = targets["MEDV"]
 
 y, X = patsy.dmatrices("MEDV ~ RM + LSTAT", data=df)
-print X[0:5, :]
-print y[0:5, :]
+print (X[0:5, :])
+print (y[0:5, :])
 
 
 # We can also apply functions to our data in the formula. For example, to perform a quadratic regression of "MEDV" with "LSTAT", we would use the following formula.
 
-# In[13]:
+# In[49]:
 
 y, X = patsy.dmatrices("MEDV ~ LSTAT + I(LSTAT**2)", data=df)
-print X[0:5, :]
+print (X[0:5, :])
 
 
 # You can use some python functions, like `numpy`'s power.
 
-# In[14]:
+# In[50]:
 
 y, X = patsy.dmatrices("MEDV ~ LSTAT + np.power(LSTAT,2)", data=df)
-print X[0:5, :]
+print (X[0:5, :])
 
 
 # Patsy can also handle categorical variables and make dummy variables for you.
 
-# In[15]:
+# In[51]:
 
 from patsy import dmatrix, demo_data
 
 data = demo_data("a", nlevels=4)
-print data
+print (data)
 dmatrix("a", data)
 
 
@@ -230,14 +242,18 @@ dmatrix("a", data)
 # * CRIM and INDUS versus MDEV (price)
 # * AGE and CHAS (categorical) versus MDEV
 
-# In[ ]:
+# In[52]:
+
+y, X = patsy.dmatrices("MEDV ~ CRIM + INDUS", data=df)
+print (X[0:5, :])
+print (y[0:5, :])
 
 
+# In[53]:
 
-
-# In[ ]:
-
-
+y, X = patsy.dmatrices("MEDV ~ AGE + CHAS", data=df)
+print (X[0:5, :])
+print (y[0:5, :])
 
 
 # ## Independent Practice
