@@ -28,24 +28,49 @@ data.head()
 # 
 # Use pandas to look through the data. Plot the variables as histograms or pairs in scatter plots as needed with seaborn until you understand each one.
 
-# In[2]:
+# In[42]:
 
-import seaborn as sbn
+import matplotlib.pyplot as plt
+
+
+data[["beds", "baths", "price", "sq__ft"]].hist()
 
 
 # ## Visualize the Data
 # The data set contains a number of variables that may be correlated with the price of the properties. Make plots of the relevant variables versus the column "price". You can use pandas, matplotlib, or seaborn.
 
-# In[ ]:
+# In[43]:
 
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-x = data['variable-name']
+x = data['beds']
 y = data['price']
 
 plt.scatter(x, y)
-plt.xlabel("Appropriate Axis Label")
+plt.xlabel("Number of Bedrooms")
+plt.ylabel("Property Price")
+plt.show()
+
+
+# In[44]:
+
+x = data['baths']
+y = data['price']
+
+plt.scatter(x, y)
+plt.xlabel("Number of Baths")
+plt.ylabel("Property Price")
+plt.show()
+
+
+# In[45]:
+
+x = data['sq__ft']
+y = data['price']
+
+plt.scatter(x, y)
+plt.xlabel("House size in square feet")
 plt.ylabel("Property Price")
 plt.show()
 
@@ -55,6 +80,21 @@ plt.show()
 # * Perform a series of regressions on various combinations of the independent variables.
 # * Plot the predicted values versus the true values
 # * Which combinations gives the best fit?
+
+# In[ ]:
+
+import statsmodels.api as sm
+
+X = data["baths"]
+y = targets["price"]
+
+# Note the difference in argument order
+model = sm.OLS(y, X).fit()
+predictions = model.predict(X)
+
+# Print out the statistics
+model.summary()
+
 
 # In[ ]:
 

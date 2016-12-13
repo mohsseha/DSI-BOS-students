@@ -12,7 +12,7 @@
 # 
 # First let's load and explore our dataset, then we'll see how to use statsmodels. We'll use `sklearn` to provide the data.
 
-# In[31]:
+# In[2]:
 
 get_ipython().magic('matplotlib inline')
 from matplotlib import pyplot as plt
@@ -25,7 +25,7 @@ print (data.DESCR)
 
 # Let's take a minute to see what the data looks like.
 
-# In[32]:
+# In[3]:
 
 print (data.feature_names)
 print (data.data[0])
@@ -34,7 +34,7 @@ print (data.target[0])
 
 # Scikit-learn has already split off the house value data into the target variable. Let's see how to build a linear regression. First let's put the data into a data frame for convenience, and do a quick check to see that everything loaded correctly.
 
-# In[33]:
+# In[4]:
 
 import numpy as np
 import pandas as pd
@@ -51,7 +51,7 @@ print (targets.head())
 # 
 # Note that statsmodels does not add a constant term by default, so you need to use `X = sm.add_constant(X)` if you want a constant term.
 
-# In[34]:
+# In[5]:
 
 import statsmodels.api as sm
 
@@ -72,7 +72,7 @@ model.summary()
 # 
 # Let's plot the predictions versus the actual values.
 
-# In[54]:
+# In[6]:
 
 # Plot the model
 plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
@@ -88,7 +88,7 @@ print ("MSE:", model.mse_model)
 # 
 # Let's try it with a constant term now.
 
-# In[36]:
+# In[7]:
 
 ## With a constant
 
@@ -106,14 +106,14 @@ predictions = model.predict(X)
 model.summary()
 
 
-# In[37]:
+# In[8]:
 
 # Plot the model
 plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
 plt.xlabel("Predicted Values from RM")
 plt.ylabel("Actual Values MEDV")
 plt.show()
-print "MSE:", model.mse_model
+print( "MSE:", model.mse_model)
 
 
 # ### Interpreting the Coefficients
