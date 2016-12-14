@@ -81,10 +81,10 @@ plt.show()
 # * Plot the predicted values versus the true values
 # * Which combinations gives the best fit?
 
-# In[ ]:
+# In[46]:
 
 import statsmodels.api as sm
-
+targets = pd.DataFrame(data, columns=["price"])
 X = data["baths"]
 y = targets["price"]
 
@@ -96,9 +96,13 @@ predictions = model.predict(X)
 model.summary()
 
 
-# In[ ]:
+# In[47]:
 
-import statsmodels.api as sm
+plt.scatter(predictions, y, s=30, c='r', marker='+', zorder=10)
+plt.xlabel("Predicted Values from Number of Baths")
+plt.ylabel("Actual Values of Price")
+plt.show()
+print ("MSE:", model.mse_model)
 
 
 # ## Bonus Exercises
@@ -106,6 +110,11 @@ import statsmodels.api as sm
 # * Find the best model you can with the three variables
 # * Are longitude and latitude useful separately? Try adding each and both to another model and look for mean_squared_error improvement
 # * Can you find any significant correlations between the non-price variables? Which ones?
+
+# In[48]:
+
+
+
 
 # In[ ]:
 
