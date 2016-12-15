@@ -10,9 +10,9 @@
 import pandas as pd
 
 
-# In[2]:
+# In[4]:
 
-cheat_sheet = pd.read_csv("cheat_sheet.csv")
+cheat_sheet = pd.read_csv("cheat_sheet.csv", encoding = "ISO-8859-1")
 
 
 # #### here i how to add a new row to the dataframe
