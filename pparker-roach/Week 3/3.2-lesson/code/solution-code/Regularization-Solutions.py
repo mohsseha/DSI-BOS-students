@@ -8,7 +8,7 @@
 # we minimize the sum
 # $$\sum_{i}{\left(\hat{y}_i - y_i \right)^2}$$
 # This is an example of a _loss function_, a function that measures the cost of inaccurate model predictions. To apply the technique of regularization, we modify the loss function with a term that penalizes more complex models. For example, we could use a loss function of the form:
-# $$\sum_{i}{\left(\hat{y}_i - y_i \right)^2 + \alpha \theta_i}$$
+# $$\sum_{i}{\left(\hat{y}_i - y_i \right)^2 + \alpha \theta_i ^2}$$
 # where the vector $\theta$ corresponds to the parameters in our model and $\alpha$ is a parameter that controls penalty strength. Larger $\alpha$ means more of a penalty since it makes the sum larger and we're trying to minimize it.
 # 
 # The classic example is fitting a polynomial to small amounts of data. Let's see how that works with some sample data.
@@ -54,7 +54,7 @@
 # sm.OLS(y, X) # fit as usual
 # ```
 
-# In[6]:
+# In[1]:
 
 get_ipython().magic('matplotlib inline')
 import random
@@ -66,6 +66,7 @@ plt.rcParams['figure.figsize'] = 8, 8
 # Generate some data
 def generate_data():
     xs = np.arange(-5, 5, 1)
+    
     data = [(x - random.random(), (x + random.random())**2) for x in xs]
     data.sort()
     xs = [x for (x, y) in data]
@@ -85,7 +86,7 @@ plt.show()
 lm = linear_model.LinearRegression()
 
 # This function from numpy builds a matrix of powers for us
-X = np.vander(xs, 4)
+X = np.vander(xs, 3)
 y = ys
 
 model = lm.fit(X, y)
@@ -95,7 +96,7 @@ plt.scatter(xs, ys)
 plt.title("Randomly Generated Data")
 plt.plot(xs, predictions)
 plt.show()
-print( "r^2:", model.score(X, y))
+print "r^2:", model.score(X, y)
 
 
 # If we apply our model to a another sample of data we should find that the model is a poor fit.
@@ -103,14 +104,14 @@ print( "r^2:", model.score(X, y))
 # In[3]:
 
 xs2, ys2 = generate_data()
-X = np.vander(xs2, 4)
+X = np.vander(xs2, 3)
 predictions = lm.predict(X)
 
 plt.scatter(xs2, ys2)
 plt.title("Randomly Generated Dataset #2")
 plt.plot(xs2, predictions)
 plt.show()
-print ("r^2:", model.score(X, ys2))
+print "r^2:", model.score(X, ys2)
 
 
 # # Ridge Regularization
@@ -131,7 +132,7 @@ plt.scatter(xs, ys)
 plt.title("Randomly Generated Data")
 plt.plot(xs, predictions)
 plt.show()
-print ("r^2:", ridge_model.score(X, ys))
+print "r^2:", ridge_model.score(X, ys)
 
 
 # In[5]:
@@ -143,7 +144,7 @@ plt.scatter(xs2, ys2)
 plt.title("Randomly Generated Dataset #2")
 plt.plot(xs2, predictions)
 plt.show()
-print ("r^2:", ridge_model.score(X, ys2))
+print "r^2:", ridge_model.score(X, ys2)
 
 
 # You should have seen that the ridge fit was not quite as good on the original data but much better on the second set of data. This is because we prevented overfitting by using regularization. If that didn't happen, rerun the notebook to generate new datasets.
@@ -158,7 +159,7 @@ print ("r^2:", ridge_model.score(X, ys2))
 # 
 # In this case the model created by the cross-validating ridge regression `RidgeCV` from scikit-learn automatically tries different values of $\alpha$ as well. Run the following code multiple times. You should see that different values of $\alpha$ are chosen by the cross-validator (with mixed results depending on how different the datasets are).
 
-# In[ ]:
+# In[6]:
 
 rlmcv = linear_model.RidgeCV(normalize=True)
 xs, ys = generate_data()
@@ -188,22 +189,140 @@ print "r^2:", ridge_model.score(X, ys2)
 
 # # Independent Practice
 # 
-# Now let's explore the Boston housing data and apply cross-validation. There is an excellent [example](http://scikit-learn.org/stable/auto_examples/plot_cv_predict.html) on the scikit-learn website. Take the code available there and modify it to compare the non-cross-validated fit and the cross-validated fit. You'll need to use [this function](http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.cross_val_score.html) for the cross-validated score.
+# Now let's explore the Boston housing data and apply cross-validation. There is an excellent [example](http://scikit-learn.org/stable/auto_examples/plot_cv_predict.html) on the scikit-learn website. Take the code available there and modify it to compare the non-cross-validated fit and the cross-validated fit.
 
-# In[ ]:
+# In[7]:
 
 # Work through the cross-validation example, adding in r^2 calculations.
 # Does cross-validation produce a better fit in this case? Why or why not?
 
+import pandas as pd
+
+# Without CV
+
+from sklearn import datasets
+from sklearn.cross_validation import cross_val_predict, cross_val_score
+from sklearn import linear_model
+import matplotlib.pyplot as plt
+
+boston = datasets.load_boston()
+X = boston.data
+y = boston.target
+
+lr = linear_model.LinearRegression()
+lr.fit(boston.data, y)
+predicted = lr.predict(boston.data)
+
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+print "r^2:", lr.score(X, y)
+
+# With CV
+
+lr = linear_model.LinearRegression()
+predicted = cross_val_predict(lr, X, y, cv=10)
+
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+print "r^2:", cross_val_score(lr, X, y, cv=10)
+
 # Once you feel comfortable with it, modify the model to use just the variables RM and LSTAT and repeat
+
+df = pd.DataFrame(boston.data, columns=boston.feature_names)
+
+X = df[["RM", "LSTAT"]]
+
+lr = linear_model.LinearRegression()
+predicted = cross_val_predict(lr, X, y, cv=10)
+
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+print "r^2:", cross_val_score(lr, X, y, cv=10)
 
 
 # # Lasso
 # 
 # Lasso (least absolute shrinkage and selection operator) is another method of applying regularization. By this point you should be able to modify the examples above to apply the [Lasso model](http://scikit-learn.org/stable/modules/linear_model.html#lasso) from scikit-learn and the cross-validated version `LassoCV`. The main difference between Lasso and Ridge regularization is how the penalty works. Read through the example and explain how the loss functions are different.
 # 
+# > The difference is the power used on the parameter term in the loss function:
+# 
+# $$\sum_{i}{\left(\hat{y}_i - y_i \right)^2 + \alpha |\theta_i|}$$
+# 
+# instead of
+# 
+# $$\sum_{i}{\left(\hat{y}_i - y_i \right)^2 + \alpha \theta_i ^2}$$
+# 
 # **Note**: Since Lasso tries to constrain the size of parameters, it's necessary to scale your data. You can normalize the data by passing `normalize=True` into `Lasso`, or by using the preprocessing methods we covered earlier.
 # 
+# 
+# For the boston dataset the Lasso fit is not quite as good.
+
+# In[8]:
+
+from sklearn import datasets
+from sklearn.cross_validation import cross_val_predict, cross_val_score
+from sklearn import linear_model
+import matplotlib.pyplot as plt
+
+boston = datasets.load_boston()
+
+X = boston.data
+y = boston.target
+
+lr = linear_model.Lasso(normalize=True)
+lr.fit(boston.data, y)
+predicted = lr.predict(boston.data)
+
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+print "r^2:", lr.score(X, y)
+
+# With CV
+
+lr = linear_model.Lasso(normalize=True)
+predicted = cross_val_predict(lr, X, y, cv=10)
+
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+print "r^2:", cross_val_score(lr, X, y, cv=10)
+
+# Once you feel comfortable with it, modify the model to use just the variables RM and LSTAT and repeat
+
+df = pd.DataFrame(boston.data, columns=boston.feature_names)
+
+X = df[["RM", "LSTAT"]]
+
+lr = linear_model.Lasso(normalize=True)
+predicted = cross_val_predict(lr, X, y, cv=10)
+
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+print "r^2:", cross_val_score(lr, X, y, cv=10)
+
 
 # In[ ]:
 
