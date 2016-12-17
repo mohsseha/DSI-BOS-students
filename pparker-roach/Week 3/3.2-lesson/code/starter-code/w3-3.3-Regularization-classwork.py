@@ -158,7 +158,7 @@ print ("r^2:", ridge_model.score(X, ys2))
 # 
 # In this case the model created by the cross-validating ridge regression `RidgeCV` from scikit-learn automatically tries different values of $\alpha$ as well. Run the following code multiple times. You should see that different values of $\alpha$ are chosen by the cross-validator (with mixed results depending on how different the datasets are).
 
-# In[ ]:
+# In[9]:
 
 rlmcv = linear_model.RidgeCV(normalize=True)
 xs, ys = generate_data()
@@ -173,8 +173,8 @@ plt.scatter(xs, ys)
 plt.title("Randomly Generated Data")
 plt.plot(xs, predictions)
 plt.show()
-print "r^2:", ridge_model.score(X, ys)
-print "alpha:", rlmcv.alpha_
+print ("r^2:", ridge_model.score(X, ys))
+print ("alpha:", rlmcv.alpha_)
 
 X = np.vander(xs2, 4)
 predictions = ridge_model.predict(X)
@@ -183,19 +183,145 @@ plt.scatter(xs2, ys2)
 plt.title("Randomly Generated Dataset #2")
 plt.plot(xs2, predictions)
 plt.show()
-print "r^2:", ridge_model.score(X, ys2)
+print ("r^2:", ridge_model.score(X, ys2))
 
 
 # # Independent Practice
 # 
 # Now let's explore the Boston housing data and apply cross-validation. There is an excellent [example](http://scikit-learn.org/stable/auto_examples/plot_cv_predict.html) on the scikit-learn website. Take the code available there and modify it to compare the non-cross-validated fit and the cross-validated fit. You'll need to use [this function](http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.cross_val_score.html) for the cross-validated score.
+# 
+# ### scikit example:
+# 
+# from sklearn import datasets
+# 
+# from sklearn.model_selection import cross_val_predict
+# 
+# from sklearn import linear_model
+# 
+# import matplotlib.pyplot as plt
+# 
+# 
+# lr = linear_model.LinearRegression()
+# 
+# boston = datasets.load_boston()
+# 
+# y = boston.target
+# 
+# 
+# #' cross_val_predict returns an array of the same size as `y` where each entry
+# 
+# #' is a prediction obtained by cross validation:
+# 
+# predicted = cross_val_predict(lr, boston.data, y, cv=10)
+# 
+# 
+# fig, ax = plt.subplots()
+# 
+# ax.scatter(y, predicted)
+# 
+# ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+# 
+# ax.set_xlabel('Measured')
+# 
+# ax.set_ylabel('Predicted')
+# 
+# plt.show()
+# 
+# 
+# ### cross_val_score example
+# 
+# from sklearn import datasets, linear_model
+# 
+# from sklearn.cross_validation import cross_val_score
+# 
+# diabetes = datasets.load_diabetes()
+# 
+# X = diabetes.data[:150]
+# 
+# y = diabetes.target[:150]
+# 
+# lasso = linear_model.Lasso()
+# 
+# print(cross_val_score(lasso, X, y))  
+# 
+# 
 
-# In[ ]:
+# In[97]:
 
 # Work through the cross-validation example, adding in r^2 calculations.
+# get the data
+import pandas as pd
+boston = datasets.load_boston()
+X=boston.data
+y = boston.target
+
+# non-cross validation
+from sklearn import linear_model
+lm = linear_model.LinearRegression()
+
+model = lm.fit(X, y)
+predictions = lm.predict(X)
+
+# cross validation
+from sklearn import datasets
+from sklearn.cross_validation import cross_val_predict
+from sklearn import linear_model
+import matplotlib.pyplot as plt
+lr = linear_model.LinearRegression()
+
+#' cross_val_predict returns an array of the same size as y where each entry
+#' is a prediction obtained by cross validation:
+predicted = cross_val_predict(lr, boston.data, y, cv=10)
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([y.min(), y.max()], [y.min(), y.max()], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+
+from sklearn.cross_validation import cross_val_score
+
+
+lasso = linear_model.Lasso()
+cv_scores = cross_val_score(lasso, X, y, cv=5)
+
+print("The non-cross-validation r^2 score was: ", model.score(X, y))
+print("cross_val_scores with 5 cross-validation iterations =  ",cv_scores)  
+
+
 # Does cross-validation produce a better fit in this case? Why or why not?
+#      it does not appear to, but at this stage of the game I can't explain why
+#      perhaps it is because the nature of the data is such that the linear regretion fits well
+
+
+
+
+# In[106]:
 
 # Once you feel comfortable with it, modify the model to use just the variables RM and LSTAT and repeat
+boston_data = pd.DataFrame(boston.data, columns=boston.feature_names)
+X=boston_data[["RM"]]
+y=boston_data["LSTAT"].tolist()
+
+#' cross_val_predict returns an array of the same size as y where each entry
+#' is a prediction obtained by cross validation:
+predicted = cross_val_predict(lr, boston.data, y, cv=10)
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([min(y), max(y)], [min(y), max(y)], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+
+#from sklearn.cross_validation import cross_val_score
+
+
+lasso = linear_model.Lasso()
+cv_scores = cross_val_score(lasso, X, y, cv=5)
+
+
+print("cross_val_scores with 5 cross-validation iterations =  ",cv_scores)  
+
 
 
 # # Lasso
@@ -207,5 +333,28 @@ print "r^2:", ridge_model.score(X, ys2)
 
 # In[ ]:
 
+boston_data = pd.DataFrame(boston.data, columns=boston.feature_names)
+X=boston_data[["RM"]]
+y=boston_data["LSTAT"].tolist()
 
+#' cross_val_predict returns an array of the same size as y where each entry
+#' is a prediction obtained by cross validation:
+
+la = linear_model.LinearRegression()
+predicted = cross_val_predict(lr, boston.data, y, cv=10)
+fig, ax = plt.subplots()
+ax.scatter(y, predicted)
+ax.plot([min(y), max(y)], [min(y), max(y)], 'k--', lw=4)
+ax.set_xlabel('Measured')
+ax.set_ylabel('Predicted')
+plt.show()
+
+#from sklearn.cross_validation import cross_val_score
+
+
+lasso = linear_model.Lasso()
+cv_scores = cross_val_score(lasso, X, y, cv=5)
+
+
+print("cross_val_scores with 5 cross-validation iterations =  ",cv_scores)  
 
