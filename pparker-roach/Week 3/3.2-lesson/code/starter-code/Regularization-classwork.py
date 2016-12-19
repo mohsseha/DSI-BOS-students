@@ -54,7 +54,7 @@
 # sm.OLS(y, X) # fit as usual
 # ```
 
-# In[5]:
+# In[6]:
 
 get_ipython().magic('matplotlib inline')
 import random
@@ -80,7 +80,7 @@ plt.show()
 
 # Now we fit a model to the data. If we try to fit a size degree polynomial to the data we should obtain a very overfitted model.
 
-# In[7]:
+# In[2]:
 
 lm = linear_model.LinearRegression()
 
@@ -100,7 +100,7 @@ print( "r^2:", model.score(X, y))
 
 # If we apply our model to a another sample of data we should find that the model is a poor fit.
 
-# In[9]:
+# In[3]:
 
 xs2, ys2 = generate_data()
 X = np.vander(xs2, 4)
@@ -116,7 +116,7 @@ print ("r^2:", model.score(X, ys2))
 # # Ridge Regularization
 # Let's use scikit-learn to run a regression with regularization as we described at the beginning of the notebook. This is called _ridge regression_ and also _Tikhonov regularization_.
 
-# In[10]:
+# In[4]:
 
 # Note: alpha plays the role of lambda in sklearn (lambda is the notation on e.g. Wikipedia)
 rlm = linear_model.Ridge(alpha=4, normalize=True)
@@ -134,7 +134,7 @@ plt.show()
 print ("r^2:", ridge_model.score(X, ys))
 
 
-# In[12]:
+# In[5]:
 
 X = np.vander(xs2, 3)
 predictions = ridge_model.predict(X)
