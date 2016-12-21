@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>AUC-sacramento-housing-solution</title>
+<title>lab_2.4_solution</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -11746,406 +11746,22 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Load required packages</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">auc</span>
-<span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="k">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-white&#39;</span><span class="p">)</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Some plotting functions to help you plot the ROC curve</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># generic curve plotting function</span>
-<span class="k">def</span> <span class="nf">auc_plotting_function</span><span class="p">(</span><span class="n">rate1</span><span class="p">,</span> <span class="n">rate2</span><span class="p">,</span> <span class="n">rate1_name</span><span class="p">,</span> <span class="n">rate2_name</span><span class="p">,</span> <span class="n">curve_name</span><span class="p">):</span>
-    <span class="n">AUC</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">rate1</span><span class="p">,</span> <span class="n">rate2</span><span class="p">)</span>
-    <span class="c1"># Plot of a ROC curve for class 1 (has_cancer)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">11</span><span class="p">,</span><span class="mi">9</span><span class="p">])</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rate1</span><span class="p">,</span> <span class="n">rate2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">curve_name</span> <span class="o">+</span> <span class="s1">&#39; (area = </span><span class="si">%0.2f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">AUC</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;k--&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">])</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">rate1_name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">rate2_name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">curve_name</span> <span class="o">+</span> <span class="s1">&#39; for house price &gt; 200,000&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-<span class="c1"># plot receiving operator characteristic curve</span>
-<span class="k">def</span> <span class="nf">plot_roc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">):</span>
-    <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_score</span><span class="p">)</span>
-    <span class="n">auc_plotting_function</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="s1">&#39;False Positive Rate&#39;</span><span class="p">,</span> <span class="s1">&#39;True Positive Rate&#39;</span><span class="p">,</span> <span class="s1">&#39;ROC&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Load the Sacramento housing data</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sac</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../assets/datasets/Sacramentorealestatetransactions.csv&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">OSError</span>                                   Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-5-77d501284849&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>sac <span class="ansi-yellow-intense-fg ansi-bold">=</span> pd<span class="ansi-yellow-intense-fg ansi-bold">.</span>read_csv<span class="ansi-yellow-intense-fg ansi-bold">(</span><span class="ansi-blue-intense-fg ansi-bold">&#39;../../assets/datasets/Sacramentorealestatetransactions.csv&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-
-<span class="ansi-green-fg">C:\Program Files\Anaconda3\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">parser_f</span><span class="ansi-blue-fg">(filepath_or_buffer, sep, delimiter, header, names, index_col, usecols, squeeze, prefix, mangle_dupe_cols, dtype, engine, converters, true_values, false_values, skipinitialspace, skiprows, skipfooter, nrows, na_values, keep_default_na, na_filter, verbose, skip_blank_lines, parse_dates, infer_datetime_format, keep_date_col, date_parser, dayfirst, iterator, chunksize, compression, thousands, decimal, lineterminator, quotechar, quoting, escapechar, comment, encoding, dialect, tupleize_cols, error_bad_lines, warn_bad_lines, skip_footer, doublequote, delim_whitespace, as_recarray, compact_ints, use_unsigned, low_memory, buffer_lines, memory_map, float_precision)</span>
-<span class="ansi-green-intense-fg ansi-bold">    560</span>                     skip_blank_lines=skip_blank_lines)
-<span class="ansi-green-intense-fg ansi-bold">    561</span> 
-<span class="ansi-green-fg">--&gt; 562</span><span class="ansi-red-fg">         </span><span class="ansi-green-intense-fg ansi-bold">return</span> _read<span class="ansi-yellow-intense-fg ansi-bold">(</span>filepath_or_buffer<span class="ansi-yellow-intense-fg ansi-bold">,</span> kwds<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    563</span> 
-<span class="ansi-green-intense-fg ansi-bold">    564</span>     parser_f<span class="ansi-yellow-intense-fg ansi-bold">.</span>__name__ <span class="ansi-yellow-intense-fg ansi-bold">=</span> name
-
-<span class="ansi-green-fg">C:\Program Files\Anaconda3\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">_read</span><span class="ansi-blue-fg">(filepath_or_buffer, kwds)</span>
-<span class="ansi-green-intense-fg ansi-bold">    313</span> 
-<span class="ansi-green-intense-fg ansi-bold">    314</span>     <span class="ansi-red-intense-fg ansi-bold"># Create the parser.</span>
-<span class="ansi-green-fg">--&gt; 315</span><span class="ansi-red-fg">     </span>parser <span class="ansi-yellow-intense-fg ansi-bold">=</span> TextFileReader<span class="ansi-yellow-intense-fg ansi-bold">(</span>filepath_or_buffer<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwds<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    316</span> 
-<span class="ansi-green-intense-fg ansi-bold">    317</span>     <span class="ansi-green-intense-fg ansi-bold">if</span> <span class="ansi-yellow-intense-fg ansi-bold">(</span>nrows <span class="ansi-green-intense-fg ansi-bold">is</span> <span class="ansi-green-intense-fg ansi-bold">not</span> <span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">)</span> <span class="ansi-green-intense-fg ansi-bold">and</span> <span class="ansi-yellow-intense-fg ansi-bold">(</span>chunksize <span class="ansi-green-intense-fg ansi-bold">is</span> <span class="ansi-green-intense-fg ansi-bold">not</span> <span class="ansi-green-intense-fg ansi-bold">None</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-
-<span class="ansi-green-fg">C:\Program Files\Anaconda3\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, f, engine, **kwds)</span>
-<span class="ansi-green-intense-fg ansi-bold">    643</span>             self<span class="ansi-yellow-intense-fg ansi-bold">.</span>options<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;has_index_names&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">=</span> kwds<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;has_index_names&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span>
-<span class="ansi-green-intense-fg ansi-bold">    644</span> 
-<span class="ansi-green-fg">--&gt; 645</span><span class="ansi-red-fg">         </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_make_engine<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>engine<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    646</span> 
-<span class="ansi-green-intense-fg ansi-bold">    647</span>     <span class="ansi-green-intense-fg ansi-bold">def</span> close<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-
-<span class="ansi-green-fg">C:\Program Files\Anaconda3\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">_make_engine</span><span class="ansi-blue-fg">(self, engine)</span>
-<span class="ansi-green-intense-fg ansi-bold">    797</span>     <span class="ansi-green-intense-fg ansi-bold">def</span> _make_engine<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">,</span> engine<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-blue-intense-fg ansi-bold">&#39;c&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    798</span>         <span class="ansi-green-intense-fg ansi-bold">if</span> engine <span class="ansi-yellow-intense-fg ansi-bold">==</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;c&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-fg">--&gt; 799</span><span class="ansi-red-fg">             </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_engine <span class="ansi-yellow-intense-fg ansi-bold">=</span> CParserWrapper<span class="ansi-yellow-intense-fg ansi-bold">(</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>f<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>options<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    800</span>         <span class="ansi-green-intense-fg ansi-bold">else</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    801</span>             <span class="ansi-green-intense-fg ansi-bold">if</span> engine <span class="ansi-yellow-intense-fg ansi-bold">==</span> <span class="ansi-blue-intense-fg ansi-bold">&#39;python&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">:</span>
-
-<span class="ansi-green-fg">C:\Program Files\Anaconda3\lib\site-packages\pandas\io\parsers.py</span> in <span class="ansi-cyan-fg">__init__</span><span class="ansi-blue-fg">(self, src, **kwds)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1211</span>         kwds<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;allow_leading_cols&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">=</span> self<span class="ansi-yellow-intense-fg ansi-bold">.</span>index_col <span class="ansi-green-intense-fg ansi-bold">is</span> <span class="ansi-green-intense-fg ansi-bold">not</span> <span class="ansi-green-intense-fg ansi-bold">False</span>
-<span class="ansi-green-intense-fg ansi-bold">   1212</span> 
-<span class="ansi-green-fg">-&gt; 1213</span><span class="ansi-red-fg">         </span>self<span class="ansi-yellow-intense-fg ansi-bold">.</span>_reader <span class="ansi-yellow-intense-fg ansi-bold">=</span> _parser<span class="ansi-yellow-intense-fg ansi-bold">.</span>TextReader<span class="ansi-yellow-intense-fg ansi-bold">(</span>src<span class="ansi-yellow-intense-fg ansi-bold">,</span> <span class="ansi-yellow-intense-fg ansi-bold">**</span>kwds<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1214</span> 
-<span class="ansi-green-intense-fg ansi-bold">   1215</span>         <span class="ansi-red-intense-fg ansi-bold"># XXX</span>
-
-<span class="ansi-green-fg">pandas\parser.pyx</span> in <span class="ansi-cyan-fg">pandas.parser.TextReader.__cinit__ (pandas\parser.c:3427)</span><span class="ansi-blue-fg">()</span>
-
-<span class="ansi-green-fg">pandas\parser.pyx</span> in <span class="ansi-cyan-fg">pandas.parser.TextReader._setup_parser_source (pandas\parser.c:6861)</span><span class="ansi-blue-fg">()</span>
-
-<span class="ansi-red-fg">OSError</span>: File b&#39;../../assets/datasets/Sacramentorealestatetransactions.csv&#39; does not exist</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a binary variable where 1 indicates a house sold for over 200,000 and 0 indicates a house sold for equal to or less than 200,000.</p>
-<p>Subset the data to just contain the number of beds, baths, the sq ft, and the over 200k indicator variable.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sac</span><span class="p">[</span><span class="s1">&#39;over_200k&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sac</span><span class="p">[</span><span class="s1">&#39;price&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">200000</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">sac</span> <span class="o">=</span> <span class="n">sac</span><span class="p">[[</span><span class="s1">&#39;beds&#39;</span><span class="p">,</span><span class="s1">&#39;baths&#39;</span><span class="p">,</span><span class="s1">&#39;sq__ft&#39;</span><span class="p">,</span><span class="s1">&#39;over_200k&#39;</span><span class="p">]]</span>
-<span class="n">sac</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span> <span class="n">sac</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-<span class="nb">print</span> <span class="n">sac</span><span class="o">.</span><span class="n">shape</span>
-<span class="nb">print</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">sac</span><span class="o">.</span><span class="n">over_200k</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Split your data into training and testing sets. The predictors are the beds, baths, and sq ft. The feature is the over 200k class variable. Make the test size 33% (and optionally stratify by the over 200k class).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">sac</span><span class="p">[[</span><span class="s1">&#39;beds&#39;</span><span class="p">,</span><span class="s1">&#39;baths&#39;</span><span class="p">,</span><span class="s1">&#39;sq__ft&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                                                    <span class="n">sac</span><span class="o">.</span><span class="n">over_200k</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> 
-                                                    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">sac</span><span class="o">.</span><span class="n">over_200k</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                                                    <span class="n">random_state</span><span class="o">=</span><span class="mi">77</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Fit a logistic regression on the training data.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">logreg</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">77</span><span class="p">)</span>
-<span class="n">logreg</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
-<span class="n">Y_pred</span> <span class="o">=</span> <span class="n">logreg</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Print out the confusion matrix</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conmat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
-
-<span class="n">confusion</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">conmat</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;over_200k&#39;</span><span class="p">,</span> <span class="s1">&#39;under_200k&#39;</span><span class="p">],</span>
-                         <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;predicted_over_200k&#39;</span><span class="p">,</span><span class="s1">&#39;predicted_under_200k&#39;</span><span class="p">])</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">confusion</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>            predicted_over_200k  predicted_under_200k
-over_200k                    69                    79
-under_200k                   51                   127
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Calculate the accuracy, precision, and recall. What can these three metrics tell you about your model?</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Accuracy tells us the percent of houses selling for over and under 200k correctly predicted</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">))</span>
-
-<span class="c1"># Precision tells us how well the classifier avoided misclassifying the over 200k houses</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">precision_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">))</span>
-
-<span class="c1"># Recall tells us how well the classifier correctly identified houses as selling for over 200k</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">recall_score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_pred</span><span class="p">))</span>
-
-<span class="c1"># The difference between precision and recall can be tricky to interpret. The intuition here is</span>
-<span class="c1"># that precision is a measure of the QUALITY of results: of the houses labeled as over 200k,</span>
-<span class="c1"># how many of those were correct?</span>
-<span class="c1"># Recall, on the other hand, is a measure of the COMPLETENESS of results: of all the houses</span>
-<span class="c1"># that sold for over 200k, how many were identified by the classifier?</span>
-<span class="c1"># On the flip side, you can have a high precision but identify very few of the total 200k houses.</span>
-<span class="c1"># Likewise, you can have a high recall but also incorrectly identify many under 200k houses</span>
-<span class="c1"># as over 200k houses.</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>0.601226993865
-0.575
-0.466216216216
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Say as a real estate agent, I prioritize minimizing false positives (predicting a house will sell for over 200k when it actually sells for under) because false positives make me lose money.</p>
-<p>Change the decision threshold to <strong>lower the false positive rate</strong> and then print out the new confusion matrix. What is the downside to lowering the false positive rate?</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Y_pp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">logreg</span><span class="o">.</span><span class="n">predict_proba</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;under_200k_pp&#39;</span><span class="p">,</span><span class="s1">&#39;over_200k_pp&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sb</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
 
-<span class="c1"># change the threshold to predict over 200k to 0.7 - it is harder for the classifier to assign the over 200k label</span>
-<span class="n">Y_pp</span><span class="p">[</span><span class="s1">&#39;over_200k_high_thresh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="mf">0.70</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">Y_pp</span><span class="o">.</span><span class="n">over_200k_pp</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
-
-<span class="n">conmat_high</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_pp</span><span class="o">.</span><span class="n">over_200k_high_thresh</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]))</span>
-
-<span class="n">confusion_high</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">conmat_high</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;over_200k&#39;</span><span class="p">,</span> <span class="s1">&#39;under_200k&#39;</span><span class="p">],</span>
-                              <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;predicted_over_200k&#39;</span><span class="p">,</span><span class="s1">&#39;predicted_under_200k&#39;</span><span class="p">])</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">confusion_high</span><span class="p">)</span>
-
-<span class="c1"># The downside to lowering the false positive rate is that the false negative rate increases.</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_columns</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_colwidth</span> <span class="o">=</span> <span class="mi">300</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-1-8026884a1365&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>Y_pp <span class="ansi-yellow-intense-fg ansi-bold">=</span> pd<span class="ansi-yellow-intense-fg ansi-bold">.</span>DataFrame<span class="ansi-yellow-intense-fg ansi-bold">(</span>logreg<span class="ansi-yellow-intense-fg ansi-bold">.</span>predict_proba<span class="ansi-yellow-intense-fg ansi-bold">(</span>X_test<span class="ansi-yellow-intense-fg ansi-bold">)</span><span class="ansi-yellow-intense-fg ansi-bold">,</span> columns<span class="ansi-yellow-intense-fg ansi-bold">=</span><span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;under_200k_pp&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">,</span><span class="ansi-blue-intense-fg ansi-bold">&#39;over_200k_pp&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span><span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> 
-<span class="ansi-green-intense-fg ansi-bold">      3</span> <span class="ansi-red-intense-fg ansi-bold"># change the threshold to predict over 200k to 0.7 - it is harder for the classifier to assign the over 200k label</span>
-<span class="ansi-green-intense-fg ansi-bold">      4</span> Y_pp<span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-blue-intense-fg ansi-bold">&#39;over_200k_high_thresh&#39;</span><span class="ansi-yellow-intense-fg ansi-bold">]</span> <span class="ansi-yellow-intense-fg ansi-bold">=</span> <span class="ansi-yellow-intense-fg ansi-bold">[</span><span class="ansi-cyan-intense-fg ansi-bold">1</span> <span class="ansi-green-intense-fg ansi-bold">if</span> x <span class="ansi-yellow-intense-fg ansi-bold">&gt;=</span> <span class="ansi-cyan-intense-fg ansi-bold">0.70</span> <span class="ansi-green-intense-fg ansi-bold">else</span> <span class="ansi-cyan-intense-fg ansi-bold">0</span> <span class="ansi-green-intense-fg ansi-bold">for</span> x <span class="ansi-green-intense-fg ansi-bold">in</span> Y_pp<span class="ansi-yellow-intense-fg ansi-bold">.</span>over_200k_pp<span class="ansi-yellow-intense-fg ansi-bold">.</span>values<span class="ansi-yellow-intense-fg ansi-bold">]</span>
-<span class="ansi-green-intense-fg ansi-bold">      5</span> 
-
-<span class="ansi-red-fg">NameError</span>: name &#39;pd&#39; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12155,7 +11771,166 @@ under_200k                   51                   127
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Plot the ROC curve using the plotting function provided.</p>
+<h2 id="Predicting-&quot;Greenness&quot;-Of-Content">Predicting "Greenness" Of Content<a class="anchor-link" href="#Predicting-&quot;Greenness&quot;-Of-Content">&#182;</a></h2><p>This dataset comes from <a href="https://www.stumbleupon.com/">stumbleupon</a>, a web page recommender and was made available <a href="https://www.kaggle.com/c/stumbleupon/download/train.tsv">here</a></p>
+<p>A description of the columns is below</p>
+<table>
+<thead><tr>
+<th>FieldName</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>url</td>
+<td>string</td>
+<td>Url of the webpage to be classified</td>
+</tr>
+<tr>
+<td>urlid</td>
+<td>integer</td>
+<td>StumbleUpon's unique identifier for each url</td>
+</tr>
+<tr>
+<td>boilerplate</td>
+<td>json</td>
+<td>Boilerplate text</td>
+</tr>
+<tr>
+<td>alchemy_category</td>
+<td>string</td>
+<td>Alchemy category (per the publicly available Alchemy API found at www.alchemyapi.com)</td>
+</tr>
+<tr>
+<td>alchemy_category_score</td>
+<td>double</td>
+<td>Alchemy category score (per the publicly available Alchemy API found at www.alchemyapi.com)</td>
+</tr>
+<tr>
+<td>avglinksize</td>
+<td>double</td>
+<td>Average number of words in each link</td>
+</tr>
+<tr>
+<td>commonLinkRatio_1</td>
+<td>double</td>
+<td># of links sharing at least 1 word with 1 other links / # of links</td>
+</tr>
+<tr>
+<td>commonLinkRatio_2</td>
+<td>double</td>
+<td># of links sharing at least 1 word with 2 other links / # of links</td>
+</tr>
+<tr>
+<td>commonLinkRatio_3</td>
+<td>double</td>
+<td># of links sharing at least 1 word with 3 other links / # of links</td>
+</tr>
+<tr>
+<td>commonLinkRatio_4</td>
+<td>double</td>
+<td># of links sharing at least 1 word with 4 other links / # of links</td>
+</tr>
+<tr>
+<td>compression_ratio</td>
+<td>double</td>
+<td>Compression achieved on this page via gzip (measure of redundancy)</td>
+</tr>
+<tr>
+<td>embed_ratio</td>
+<td>double</td>
+<td>Count of number of <embed> usage</td>
+</tr>
+<tr>
+<td>frameBased</td>
+<td>integer (0 or 1)</td>
+<td>A page is frame-based (1) if it has no body markup but have a frameset markup</td>
+</tr>
+<tr>
+<td>frameTagRatio</td>
+<td>double</td>
+<td>Ratio of iframe markups over total number of markups</td>
+</tr>
+<tr>
+<td>hasDomainLink</td>
+<td>integer (0 or 1)</td>
+<td>True (1) if it contains an <a> with an url with domain</td>
+</tr>
+<tr>
+<td>html_ratio</td>
+<td>double</td>
+<td>Ratio of tags vs text in the page</td>
+</tr>
+<tr>
+<td>image_ratio</td>
+<td>double</td>
+<td>Ratio of <img> tags vs text in the page</td>
+</tr>
+<tr>
+<td>is_news</td>
+<td>integer (0 or 1)</td>
+<td>True (1) if StumbleUpon's news classifier determines that this webpage is news</td>
+</tr>
+<tr>
+<td>lengthyLinkDomain</td>
+<td>integer (0 or 1)</td>
+<td>True (1) if at least 3 <a> 's text contains more than 30 alphanumeric characters</td>
+</tr>
+<tr>
+<td>linkwordscore</td>
+<td>double</td>
+<td>Percentage of words on the page that are in hyperlink's text</td>
+</tr>
+<tr>
+<td>news_front_page</td>
+<td>integer (0 or 1)</td>
+<td>True (1) if StumbleUpon's news classifier determines that this webpage is front-page news</td>
+</tr>
+<tr>
+<td>non_markup_alphanum_characters</td>
+<td>integer</td>
+<td>Page's text's number of alphanumeric characters</td>
+</tr>
+<tr>
+<td>numberOfLinks</td>
+<td>integer Number of <a></td>
+<td>markups</td>
+</tr>
+<tr>
+<td>numwords_in_url</td>
+<td>double</td>
+<td>Number of words in url</td>
+</tr>
+<tr>
+<td>parametrizedLinkRatio</td>
+<td>double</td>
+<td>A link is parametrized if it's url contains parameters or has an attached onClick event</td>
+</tr>
+<tr>
+<td>spelling_errors_ratio</td>
+<td>double</td>
+<td>Ratio of words not found in wiki (considered to be a spelling mistake)</td>
+</tr>
+<tr>
+<td>label</td>
+<td>integer (0 or 1)</td>
+<td>User-determined label. Either evergreen (1) or non-evergreen (0); available for train.tsv only</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="What-are-'evergreen'-sites?">What are 'evergreen' sites?<a class="anchor-link" href="#What-are-'evergreen'-sites?">&#182;</a></h3><ul>
+<li>These are websites that always relevant like recipies or reviews (as opposed to current events)</li>
+<li>Look at some examples</li>
+</ul>
 
 </div>
 </div>
@@ -12165,8 +11940,24 @@ under_200k                   51                   127
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">Y_score</span> <span class="o">=</span> <span class="n">logreg</span><span class="o">.</span><span class="n">decision_function</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-<span class="n">plot_roc</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Y_score</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../../assets/datasets/train.tsv&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">)</span>
+
+<span class="c1"># Extract the title and body from the boilerplate JSON text</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">boilerplate</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;body&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">boilerplate</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;body&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="p">[[</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;label&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12177,17 +11968,49 @@ under_200k                   51                   127
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-2-8cbf7d80bc96&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>Y_score <span class="ansi-yellow-intense-fg ansi-bold">=</span> logreg<span class="ansi-yellow-intense-fg ansi-bold">.</span>decision_function<span class="ansi-yellow-intense-fg ansi-bold">(</span>X_test<span class="ansi-yellow-intense-fg ansi-bold">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      2</span> plot_roc<span class="ansi-yellow-intense-fg ansi-bold">(</span>Y_test<span class="ansi-yellow-intense-fg ansi-bold">,</span> Y_score<span class="ansi-yellow-intense-fg ansi-bold">)</span>
+<div class="output_area"><div class="prompt output_prompt">Out[3]:</div>
 
-<span class="ansi-red-fg">NameError</span>: name &#39;logreg&#39; is not defined</pre>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>IBM Sees Holographic Calls Air Breathing Batteries ibm sees holographic calls, air-breathing batteries</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>The Fully Electronic Futuristic Starting Gun That Eliminates Advantages in Races the fully electronic, futuristic starting gun that eliminates advantages in races the fully electronic, futuristic starting gun that eliminates advantages in races</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Fruits that Fight the Flu fruits that fight the flu | cold &amp; flu | men's health</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10 Foolproof Tips for Better Sleep</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>The 50 Coolest Jerseys You Didn t Know Existed coolest jerseys you haven't seen</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
 </div>
+</div>
+
 </div>
 
 </div>
@@ -12199,20 +12022,122 @@ under_200k                   51                   127
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Bonus: when might precision and recall be more useful than the ROC?</p>
+<h4 id="Build-a-feature-matrix-where-X-contains-useful-features-and-y-contains-the-target-variable-label">Build a feature matrix where X contains useful features and y contains the target variable <code>label</code><a class="anchor-link" href="#Build-a-feature-matrix-where-X-contains-useful-features-and-y-contains-the-target-variable-label">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span>
+        <span class="s1">&#39;linkwordscore&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;news_front_page&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;is_news&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;html_ratio&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;image_ratio&#39;</span>
+    <span class="p">]]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">label</span>
+</pre></div>
 
 </div>
 </div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Precision and recall are more useful when the proportion of the positive class is smaller, since they are sensitive to this.</p>
+<h4 id="Build-a-Logistic-Regression-model-using-scikit-learn">Build a Logistic Regression model using scikit-learn<a class="anchor-link" href="#Build-a-Logistic-Regression-model-using-scikit-learn">&#182;</a></h4><ul>
+<li>Examine the coefficients using the <code>examine_coefficients</code> function provided</li>
+<li>Evaluate the AUC, precision and recall of the model using cross-validation</li>
+<li>Plot the ROC curve</li>
+<li>Iterate on the model by adding in additional features in <code>X</code> above</li>
+</ul>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">examine_coefficients</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span> <span class="s1">&#39;Coefficient&#39;</span> <span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">,</span> <span class="s1">&#39;Feature&#39;</span> <span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">}</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;Coefficient&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="k">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="c1"># REMEMBER: by default this model has regularization which we will revisit at the end of the week</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="c1"># This fits the model to learn the coefficients</span>
+
+<span class="n">examine_coefficients</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="k">import</span> <span class="n">cross_val_score</span>
+
+<span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;precision&#39;</span><span class="p">,</span> <span class="s1">&#39;recall&#39;</span><span class="p">,</span> <span class="s1">&#39;roc_auc&#39;</span><span class="p">]:</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">cross_val_score</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">metric</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mean </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">, all: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">metric</span><span class="p">,</span> <span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">scores</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
     </div>
   </div>

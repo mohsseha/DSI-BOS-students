@@ -3,7 +3,7 @@
 
 # Load required packages
 
-# In[7]:
+# In[3]:
 
 import numpy as np
 import pandas as pd
@@ -19,7 +19,7 @@ get_ipython().magic('matplotlib inline')
 
 # Some plotting functions to help you plot the ROC curve
 
-# In[8]:
+# In[4]:
 
 # generic curve plotting function
 def auc_plotting_function(rate1, rate2, rate1_name, rate2_name, curve_name):
@@ -44,7 +44,7 @@ def plot_roc(y_true, y_score):
 
 # Load the Sacramento housing data
 
-# In[9]:
+# In[5]:
 
 sac = pd.read_csv('../../assets/datasets/Sacramentorealestatetransactions.csv')
 
@@ -53,14 +53,14 @@ sac = pd.read_csv('../../assets/datasets/Sacramentorealestatetransactions.csv')
 # 
 # Subset the data to just contain the number of beds, baths, the sq ft, and the over 200k indicator variable.
 
-# In[10]:
+# In[ ]:
 
 sac['over_200k'] = sac['price'].map(lambda x: 0 if x > 200000 else 1)
 sac = sac[['beds','baths','sq__ft','over_200k']]
 sac.dropna(inplace=True)
 
 
-# In[11]:
+# In[ ]:
 
 print sac.head()
 print sac.shape
@@ -69,7 +69,7 @@ print np.sum(sac.over_200k)
 
 # Split your data into training and testing sets. The predictors are the beds, baths, and sq ft. The feature is the over 200k class variable. Make the test size 33% (and optionally stratify by the over 200k class).
 
-# In[12]:
+# In[ ]:
 
 X_train, X_test, Y_train, Y_test = train_test_split(sac[['beds','baths','sq__ft']].values,
                                                     sac.over_200k.values, 
@@ -79,7 +79,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(sac[['beds','baths','sq__ft'
 
 # Fit a logistic regression on the training data.
 
-# In[13]:
+# In[ ]:
 
 logreg = LogisticRegression(random_state=77)
 logreg.fit(X_train, Y_train)
@@ -125,7 +125,7 @@ print(recall_score(Y_test, Y_pred))
 # 
 # Change the decision threshold to **lower the false positive rate** and then print out the new confusion matrix. What is the downside to lowering the false positive rate?
 
-# In[16]:
+# In[1]:
 
 Y_pp = pd.DataFrame(logreg.predict_proba(X_test), columns=['under_200k_pp','over_200k_pp'])
 
@@ -144,7 +144,7 @@ print(confusion_high)
 
 # Plot the ROC curve using the plotting function provided.
 
-# In[17]:
+# In[2]:
 
 Y_score = logreg.decision_function(X_test)
 plot_roc(Y_test, Y_score)
