@@ -1,0 +1,34 @@
+import urllib
+from bs4 import BeautifulSoup
+import pandas as pd
+comp = []
+loc = []
+job_list = []
+sal = []
+for i in range(150):
+    URL = "https://www.indeed.com/jobs?q=data+scientist+$20,000&l=Boston,+MA&start={}&pp=".format(str((i-1)*10))
+    soup = BeautifulSoup(urllib.urlopen(URL).read(), 'html.parser')
+    results = soup.find_all('div', attrs={'data-tn-component': 'organicJob'})
+    for x in results:
+        company = x.find('span', attrs={"itemprop":"name"})
+        print('company:', company.text.strip())
+        cleancompany = company.text.strip()
+        comp.append(cleancompany)
+
+        job = x.find('a', attrs={'data-tn-element': "jobTitle"})
+        print('job:', job.text.strip())
+        cleanjob = job.text.strip()
+        job_list.append(cleanjob)
+
+        salary = x.find('nobr')
+        if salary:
+            print('salary:', salary.text.strip())
+            cleansal = salary.text.strip()
+            sal.append(cleansal)
+        else:
+            sal.append(None)
+    
+        location = x.find('span', attrs = {'itemprop':'addressLocality'})
+        print ('location:', location.text.strip())
+        cleanlocation = location.text.strip()
+        loc.append(cleanlocation)
