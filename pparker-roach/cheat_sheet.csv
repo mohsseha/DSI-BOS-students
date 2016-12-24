@@ -8,3 +8,5 @@ Jupyter,allows you to save notebooks as .py and or html files,http://protips.max
 python/pandas,different ways to index pandas dataframes and series,".loc, .iloc, .ix",Loc works on labels in the index. ? iloc works on the positions in the index (so it only takes integers). ? ix usually tries to behave like loc but falls back to behaving like iloc if the label is not in the index.
 Statistics,basic intro to linear regression,[5~https://www.youtube.com/watch?v=I8Dr1OGUdZQ,Watch it and the next video on least squares regression
 All,Helps me get homework done,use the solution sets,helps me get the gist of new material without getting caught in the weeks
+All Packages,A way to look up an appropriate library/function for a specific task,"The matrix will key on high level functionality, then list the library, then the function, then perhaps a pointer to the lesson/lab  for an example of its usage in the course",
+All,Source of cheat sheets,https://www.cheatography.com/,looking for help on a topic -regular expressions - jupyter shortcuts - cheat sheets in general - etc.
