@@ -16,7 +16,7 @@ def text_file_word_splitter(textfile):
     import re
     f = open(textfile,'r',encoding='utf8')
     x = f.read()
-    x = re.sub(r'[^a-zA-Z0-9 ]', '', x)
+    x = re.sub(r'[^a-zA-Z0-9 \n]', '', x)
     x = x.lower()
     word_list = x.split()
     word_counter(word_list)
