@@ -1,9 +1,5 @@
----
-title: Command Control 2
-duration: "1:00"
----
 
-# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Morning Exercise: Working with Python and the Command Line 2
+# ![](https://ga-dash.s3.amazonaws.com/production/assets/logo-9f88ae6c9c3871690e33280fcf557f33.png) Homework 2: Working with Python and the Command Line 2
 Week 8 | HW 2
 
 ### Pair Program #1: Files calling files
