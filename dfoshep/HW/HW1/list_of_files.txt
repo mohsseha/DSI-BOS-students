@@ -1,0 +1,4 @@
+counter.py
+input.txt
+list_of_files.txt
+sat_scores.csv
