@@ -11,27 +11,27 @@ def word_counter ():
                    "*", "/", "#" # miscellaneous
                   ]
     
-    # Get text from stdin
-    text_string = ""
-    for line in stdin.readlines():
-        text_string += line
-
-    # Split the text string according to punctuation, and remove any double spaces
-    string_list = text_string
-    for splitter in punctuation:
-        string_list = string_list.replace(splitter, " ").replace("  ", " ")
-
-    # Split the string by spaces
-    split_string_list = string_list.split(" ")
-    
-    # Count word frequency
     count_dictionary = {}
-    for word in split_string_list:
-        if word.title() in count_dictionary.keys():
-            count_dictionary[word.title()] += 1
-        else:
-            count_dictionary[word.title()] = 1
-            
+    
+    # Get text from stdin
+    for line in stdin.readlines():
+        
+
+        # Split the text string according to punctuation, and remove any double spaces
+        string_list = line
+        for splitter in punctuation:
+            string_list = string_list.replace(splitter, " ").replace("  ", " ")
+
+        # Split the string by spaces
+        split_string_list = string_list.split(" ")
+
+        # Count word frequency
+        for word in split_string_list:
+            if word.title() in count_dictionary.keys():
+                count_dictionary[word.title()] += 1
+            else:
+                count_dictionary[word.title()] = 1
+
     # Remove blank entries from the count dictionary
     if "" in count_dictionary.values():
         del count_dictionary[""]
