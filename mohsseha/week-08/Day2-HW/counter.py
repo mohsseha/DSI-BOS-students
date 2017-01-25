@@ -2,16 +2,14 @@
 
 import sys
 import string
+import my_cleaner
 from collections import defaultdict
 
 wordcounts = defaultdict(int)
 
 for line in sys.stdin:
-    # line = line.encode('ascii')
-    line = line.strip()
-    line = line.translate(None, string.punctuation)
-    words = [word.lower() for word in line.split()]
-
+    words = my_cleaner.clean_text(line)
+    
     for word in words:
         wordcounts[word] += 1
 
