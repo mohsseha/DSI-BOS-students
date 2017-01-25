@@ -1,6 +1,6 @@
 if __name__ = "__main__":
     import sys
-    import text_clean
+    from text_clean import clean_text
     for line in sys.stdin:
         line = clean_text(line)
         for word in line:
