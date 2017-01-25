@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import re
 
@@ -8,7 +10,7 @@ work with a .csv file since the function removes ',' values.
 
 word_dict = {} # initialize a blank dictionary
 for line in sys.stdin:
-    line = re.sub('[!@#$,.;]', '', line) # removes punctuation
+    line = re.sub('[!@#$,.;?"]', '', line) # removes punctuation
     line = re.sub('\xe2.*', '', line) # removes unicode issues
     line = line.strip()
     if not line: # if line is blank, then pass
@@ -18,6 +20,7 @@ for line in sys.stdin:
             # checks if the word is already in the dictionary
             # if it is then add one to the value count
             # else set the value count at 1
+            word = word.lower()
             if word in word_dict:
                 word_dict[word] += 1
             else:
