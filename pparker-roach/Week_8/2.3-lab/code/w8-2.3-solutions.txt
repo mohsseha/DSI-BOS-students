@@ -1,0 +1,173 @@
+
+from __future__ import division
+import os
+import math
+import pylab as py
+import sys
+import glob
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+
+pre_poll = pd.read_csv('C:/Users/Pat.NOAGALLERY/Documents/data_sources/polls.csv')
+print(pre_poll.head(10))
+del pre_poll['Unnamed: 0']
+print(pre_poll['org'].value_counts())
+del pre_poll['org']
+pre_poll.shape
+
+del pre_poll['year']; del pre_poll['survey']; del pre_poll['female']; del pre_poll['black']; del pre_poll['weight']
+
+pre_poll['inclusion'] = np.where(pd.isnull(pre_poll['bush']), 1, 0);
+
+from sklearn import preprocessing
+
+encode = preprocessing.LabelEncoder()
+pre_poll['age'] = encode.fit_transform(pre_poll.age) 
+pre_poll['state'] = encode.fit_transform(pre_poll.state)
+pre_poll['edu'] = encode.fit_transform(pre_poll.edu)
+
+
+pre_poll.head()
+
+
+pre_poll['train'] = np.random.uniform(0, 1, len(pre_poll)) <= .70
+pre_poll_train = pre_poll[pre_poll['train'] == True]
+test = pre_poll[pre_poll['train'] == False]
+
+
+import numpy as np
+import pymc as pm
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
+
+# This is my favorite logistiic implementation, very simple, close to R's lm. 
+import statsmodels.formula.api as sm
+#from sklearn.linear_model import LogisticRegression
+
+
+rhs_columns = ['edu', 'state', 'age']
+inclusion_lm = sm.Logit(pre_poll_train['inclusion'], pre_poll_train[rhs_columns]).fit()
+
+inclusion_lm.summary()
+
+y_pred = inclusion_lm.predict(test[rhs_columns]); y_pred
+
+from sklearn.neighbors import KNeighborsClassifier
+
+knn_impute = KNeighborsClassifier(n_neighbors = 5)
+knn_impute.fit(pre_poll_train[rhs_columns], pre_poll_train['inclusion'])
+
+knn_pred = knn_impute.predict(test[rhs_columns])
+
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import Imputer
+
+
+random_for = RandomForestClassifier(n_estimators=1000)
+random_for.fit(pre_poll_train[rhs_columns], pre_poll_train['inclusion'])
+
+
+# Import relevant modules   - Example provided from PyMC docs
+import pymc 
+import numpy as np
+
+# Some data      - This is just simulated data, in real life, you won't have this section as a function, but maybe a pd/numpy 
+#                  data frame/array etc.
+n = 5*np.ones(4,dtype=int)
+x = np.array([-.86,-.3,-.05,.73])
+
+# Priors on unknown parameters      - Note - Similar to PyStan, because it's a Bayesian analysis, we have to define the distribution
+#                                     for all of our parameters. Notice there's something quotes 'alpha' that is where you put
+#                                     your parameter's label. You can put anything as a label, as long as it's a string. The reason
+#                                     we have a label will become clear as we work more with PyMC. Just keep in mind of it for now.
+alpha = pymc.Normal('alpha',mu=0,tau=.01)
+beta = pymc.Normal('beta',mu=0,tau=.01)
+
+# Arbitrary deterministic function of parameters             - Again, defining our model's form. 
+@pymc.deterministic                                          # Just put this string up for now whenever you specify your model 
+def theta(a=alpha, b=beta):                                  # We'll discuss later
+    """theta = logit^{-1}(a+b)"""
+    return pymc.invlogit(a+b*x)
+
+# Binomial likelihood for data
+d = pymc.Binomial('d', n=n, p=theta, value=np.array([0.,1.,3.,5.]),\
+                  observed=True)
+
+import numpy as np
+import pymc as pm
+import matplotlib.pyplot as plt
+
+w0 = pm.Normal('w0', 0, 0.000001, value = 0)    
+w1 = pm.Normal('w1', 0, 0.000001, value = 0)   
+w2 = pm.Normal('w2', 0, 0.000001, value = 0)   
+w3 = pm.Normal('w3', 0, 0.000001, value = 0)   
+w0.value; w1.value; w2.value; w3.value
+
+@pm.deterministic
+def bayesian_logistic(w0 = w0, w1 = w1, w2 = w2, w3 = w3, x1 = pre_poll_train['age'], x2 = pre_poll_train['state'], x3 = pre_poll_train['edu']):  #technically abusing the use of default
+    return 1.0 / (1.0 + np.exp(w0 + w1*x1))
+
+observed = pm.Bernoulli('observed', bayesian_logistic, value = pre_poll_train['inclusion'], observed=True); observed
+
+
+m = pm.MCMC(locals())
+m.sample(100000, 50000, 50)
+
+
+pm.Matplot.plot(m)
+plt.show()
+
+fpr, tpr, thresholds =roc_curve(test['inclusion'], y_pred)
+roc_auc = auc(fpr, tpr)
+print("Area under the ROC curve : %f" % roc_auc)
+
+
+random_pred = random_for.predict_proba(test[rhs_columns]); random_pred
+
+fpr, tpr, _ = roc_curve(test['inclusion'], random_pred[:, 1])
+roc_auc = auc(fpr, tpr)
+print("Area under the ROC curve : %f" % roc_auc) 
+
+fpr, tpr, thresholds =roc_curve(test['inclusion'], knn_pred)
+roc_auc = auc(fpr, tpr)
+print("Area under the ROC curve : %f" % roc_auc)
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
+# Define our feature set 
+
+test_col_1 = pre_poll_train[rhs_columns]
+
+# Add a constant term for our regression equation
+
+test_col_1 = sm.add_constant(test_col_1) 
+         
+    
+y = pre_poll_train['inclusion']; N = len(y); M = np.empty((1000,4))      
+
+# Write a for lop that creates a vector of length 1000, each being populated by a Dirchilet draw
+
+for b in range (0,1000):
+    W = np.random.gamma(1.,1.,N) 
+    W = W/np.sum(W)              
+    
+    result = sm.WLS(y, test_col_1 ,weights=W).fit()
+    M[b,:] = np.matrix(result.params) 
+    M[:,0] = M[:,1]/M[:,2]          
+                                
+
+# Put Bayesian Bootstrap results in a pandas dataframe        
+BB = pd.DataFrame({'constant':M[:,0], 'edu':M[:,1], 'state':M[:,2], 'age':M[:,3]})
+
+BB.quantile(q=[0.025, 0.05, 0.5, 0.95, 0.975])
+
+BB.describe() 
+
+

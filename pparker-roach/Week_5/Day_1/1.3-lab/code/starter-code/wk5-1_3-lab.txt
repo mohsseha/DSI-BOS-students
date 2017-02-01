@@ -1,0 +1,105 @@
+
+import sqlite3
+import pandas as pd
+enron_db = 'C:/Users/Pat.NOAGALLERY/Documents/data_sources/enron.db'
+conn =sqlite3.connect(enron_db)
+
+tables = pd.read_sql("SELECT name FROM sqlite_master WHERE TYPE ='table'", con=conn)
+tables
+
+
+query = '''SELECT * FROM MessageBase LIMIT 10'''
+pd.read_sql(query, con=conn)
+
+query = '''SELECT * FROM RecipientBase LIMIT 10'''
+pd.read_sql(query, con=conn)
+
+query = '''SELECT * FROM EmployeeBase LIMIT 10'''
+pd.read_sql(query, con=conn)
+
+
+for table in tables['name']:
+    print(table)
+    for row in conn.execute("pragma table_info("+table+")").fetchall():
+        print (row)
+
+query = '''SELECT * FROM EmployeeBase LIMIT 5'''
+print("EmployeeBase")
+print(pd.read_sql(query, con=conn))
+query = '''SELECT * FROM MessageBase LIMIT 5'''
+print("MessageBase")
+print(pd.read_sql(query, con=conn))
+query = '''SELECT * FROM RecipientBase LIMIT 5'''
+print("RecipientBase")
+print(pd.read_sql(query, con=conn))
+
+
+query = '''SELECT * FROM EmployeeBase'''
+employee = pd.read_sql(query, con=conn)
+print("employee shape ", employee.shape)
+query = '''SELECT * FROM MessageBase'''
+message = pd.read_sql(query, con=conn)
+print("message shape ", message.shape)
+query = '''SELECT * FROM RecipientBase'''
+recipient = pd.read_sql(query, con=conn)
+print("recipient shape ", recipient.shape)
+
+print ("Total Employees = ", employee.shape[0])
+print ("Total Messages = ", message.shape[0])
+
+import datetime
+import time
+message['time'] = pd.to_datetime(message['unix_time'], unit='s')
+print ("Oldest Message = ", min(message.time))
+print ("Newest Message = ", max(message.time))
+
+msg = message.groupby('from_eid').size()
+
+print("There were ", msg[msg == 1].count(), " messages with only 1 recipient")
+print("There were ", msg[msg >= 5].count(), " messages with >=  5 recipients")
+print("The highest number of recipients for a message  ", max(msg))
+print("The highest number of recipients for a message was sent by the user with eid ", msg[msg  == max(msg)].index[0])
+
+
+from bokeh.charts import Histogram
+from bokeh.sampledata.autompg import autompg as df
+from bokeh.charts import defaults, vplot, hplot, show, output_file
+
+defaults.width = 450
+defaults.height = 350
+
+# input options
+hist = Histogram(msg, title="Distribution of Recepient Numbers")
+
+hist.xaxis.axis_label = 'Messages'
+hist.yaxis.axis_label = '# of Msgs'
+
+
+output_file("histograms.html")
+
+show(
+    vplot(
+        hplot(hist)
+    )
+)
+
+# Are there more Men or Women employees?
+gender = employee.groupby('gender').size()
+print ("\nThe gender split in the organization is as follows \n",gender)
+
+#How is gender di(stributed across departments?
+gender = employee.groupby(['department', 'gender']).size()
+print("\nGender is split across departments as follows \n", gender)
+
+#Who is sending more emails? Men or Women?
+base = pd.merge(employee, message, left_on='eid', right_on='from_eid')
+basegender = base.groupby('gender').size()
+print("\nMessages sent split by gender \n", basegender)
+
+# What's the average number of emails sent by each gender?
+basegender = base.groupby('gender').mean()
+print("\nMessages sent split by gender \n", basegender)
+
+
+
+
