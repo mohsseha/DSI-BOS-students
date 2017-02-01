@@ -8,7 +8,7 @@ def clean_text():
         line = re.sub('[!@#$,.;?":]', '', line) # removes punctuation
         line = re.sub('\xe2.*', '', line) # removes unicode issues
         line = line.strip().lower()
-        print line
+        return line
 
 if __name__ == '__main__':
     clean_text()
