@@ -1,9 +1,11 @@
+#!/usr/bin/python   
+
 from sys import stdin
 
 def word_counter ():
     
     punctuation = [",", ".", "!", "?", # pauses and stops
-                   " '", "' ", u"\u201D", u"\u201C", # quotations
+                   " '", "' ", '"', u"\u201D", u"\u201C", # quotations
                    "(", ")", "[", "]", "{", "}", # parenthases, brackets and braces
                    ";", ":", # colons
                    "\n", "\t", # white spaces
@@ -27,11 +29,11 @@ def word_counter ():
 
         # Count word frequency
         for word in split_string_list:
-            if word.title() in count_dictionary.keys():
-                count_dictionary[word.title()] += 1
+            if word.lower() in count_dictionary.keys():
+                count_dictionary[word.lower()] += 1
             else:
-                count_dictionary[word.title()] = 1
-
+                count_dictionary[word.lower()] = 1
+    
     # Remove blank entries from the count dictionary
     if "" in count_dictionary.values():
         del count_dictionary[""]
@@ -40,10 +42,10 @@ def word_counter ():
     for word in sorted(count_dictionary.keys()):
         print("{}\t{}".format(word, count_dictionary[word]))
 
-    with open("./counter_output.txt", 'w') as o:
-        for word in sorted(count_dictionary.keys()):
-            o.write("{}\t{}".format(word, count_dictionary[word]))
-            
+#    with open("./counter_output.txt", 'w') as o:
+#        for word in sorted(count_dictionary.keys()):
+#            o.write("{}\t{}\n".format(word, count_dictionary[word]))
+#            
 if __name__ == '__main__':
 
     word_counter()
