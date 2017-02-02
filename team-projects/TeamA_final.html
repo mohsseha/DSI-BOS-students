@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Wk5-4.2-Lab</title>
+<title>TeamA_final</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -11746,39 +11746,13 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Feature-Selection-Lab">Feature Selection Lab<a class="anchor-link" href="#Feature-Selection-Lab">&#182;</a></h1><p>In this lab we will explore feature selection on the Titanic Dataset. First of all let's load a few things:</p>
-<ul>
-<li>Standard packages</li>
-<li>The training set from lab 2.3</li>
-<li>The union we have saved in lab 2.3</li>
-</ul>
-<p>You can load the titanic data as follows:</p>
-
-<pre><code>psql -h dsi.c20gkj5cvu3l.us-east-1.rds.amazonaws.com -p 5432 -U dsi_student titanic
-password: gastudents</code></pre>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">create_engine</span>
-<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">&#39;postgresql://dsi_student:gastudents@dsi.c20gkj5cvu3l.us-east-1.rds.amazonaws.com/titanic&#39;</span><span class="p">)</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM train&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">linear_model</span>
 </pre></div>
 
 </div>
@@ -11788,231 +11762,107 @@ password: gastudents</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">gzip</span>
-<span class="kn">import</span> <span class="nn">dill</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">TeamAPredictor</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training_tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TMO&quot;</span><span class="p">,</span><span class="s2">&quot;AMZN&quot;</span><span class="p">,</span><span class="s2">&quot;AAPL&quot;</span><span class="p">,</span><span class="s2">&quot;GM&quot;</span><span class="p">,</span><span class="s2">&quot;IBM&quot;</span><span class="p">,</span><span class="s2">&quot;TWTR&quot;</span><span class="p">,</span><span class="s2">&quot;CBS&quot;</span><span class="p">,</span><span class="s2">&quot;TM&quot;</span><span class="p">,</span><span class="s2">&quot;BIO&quot;</span><span class="p">]</span>
 
-<span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;C:/Users/Pat.NOAGALLERY/Documents/data_sources/union.dill.gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
-    <span class="n">union</span> <span class="o">=</span> <span class="n">dill</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fin</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">requests</span>
+        <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+        <span class="kn">import</span> <span class="nn">io</span>
+        <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+        <span class="c1"># parameters to modify in the query</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;output&#39;</span><span class="p">:</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;startdate&#39;</span><span class="p">:</span><span class="s1">&#39;2000-01-01&#39;</span><span class="p">,</span>
+       <span class="s1">&#39;enddate&#39;</span><span class="p">:</span><span class="s1">&#39;2017-01-01&#39;</span><span class="p">,</span>   
+       <span class="s1">&#39;q&#39;</span><span class="p">:</span><span class="n">ticker</span>
+       <span class="p">}</span>
+
+        <span class="n">URL</span> <span class="o">=</span> <span class="s1">&#39;http://www.google.com/finance/historical&#39;</span> <span class="c1"># base URL</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span><span class="o">.</span><span class="n">content</span> <span class="c1"># create the requests object</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
+        <span class="c1"># dropping unnecessary columns and setting the index as datetime</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Open&#39;</span><span class="p">,</span> <span class="s1">&#39;High&#39;</span><span class="p">,</span> <span class="s1">&#39;Low&#39;</span><span class="p">,</span> <span class="s1">&#39;Volume&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Date&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">()</span>
+
+        <span class="c1"># DataFrame manipulation</span>
+        <span class="n">offset_1</span><span class="p">,</span> <span class="n">offset_2</span><span class="p">,</span> <span class="n">offset_3</span><span class="p">,</span><span class="n">offset_4</span>  <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">252</span><span class="o">*</span><span class="mi">3</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">252</span><span class="o">*</span><span class="mf">3.25</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">252</span><span class="o">*</span><span class="mf">3.5</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="mi">252</span><span class="o">*</span><span class="mf">3.75</span><span class="p">)</span> <span class="c1"># approximately one year, two years and three years</span>
+        <span class="n">df_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">-</span> <span class="n">offset_4</span> <span class="c1"># determines the maximum length possible for our dataframe</span>
+
+        <span class="n">x_4</span> <span class="o">=</span> <span class="n">df</span><span class="p">[:</span><span class="n">df_length</span><span class="p">]</span> <span class="c1"># target variable</span>
+        <span class="n">x_3</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">offset_1</span><span class="p">:</span><span class="n">df_length</span> <span class="o">+</span> <span class="n">offset_1</span><span class="p">]</span>  
+        <span class="n">x_2</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">offset_2</span><span class="p">:</span><span class="n">df_length</span> <span class="o">+</span> <span class="n">offset_2</span><span class="p">]</span> 
+        <span class="n">x_1</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">offset_3</span><span class="p">:</span><span class="n">df_length</span> <span class="o">+</span> <span class="n">offset_3</span><span class="p">]</span> 
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">offset_4</span><span class="p">:</span> <span class="n">df_length</span> <span class="o">+</span> <span class="n">offset_4</span><span class="p">]</span> 
+
+        <span class="c1"># modify the indexes so we can concatenate the dataframes</span>
+        <span class="n">x_4</span> <span class="o">=</span> <span class="n">x_4</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_3</span> <span class="o">=</span> <span class="n">x_3</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_2</span> <span class="o">=</span> <span class="n">x_2</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_1</span> <span class="o">=</span> <span class="n">x_1</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x_0</span> <span class="o">=</span> <span class="n">x_0</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+ 
+        <span class="n">frames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">x_3</span><span class="p">,</span> <span class="n">x_4</span><span class="p">]</span> <span class="c1"># list of dataframes to pass into pd.concat</span>
+
+        <span class="c1"># concat the dataframes and rename the columns</span>
+        <span class="n">final_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">frames</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">final_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x_1&#39;</span><span class="p">,</span> <span class="s1">&#39;x_2&#39;</span><span class="p">,</span> <span class="s1">&#39;x_3&#39;</span><span class="p">,</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">final_df</span>
     
-<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">u&#39;Pclass&#39;</span><span class="p">,</span> <span class="s1">u&#39;Sex&#39;</span><span class="p">,</span> <span class="s1">u&#39;Age&#39;</span><span class="p">,</span> <span class="s1">u&#39;SibSp&#39;</span><span class="p">,</span> <span class="s1">u&#39;Parch&#39;</span><span class="p">,</span> <span class="s1">u&#39;Fare&#39;</span><span class="p">,</span> <span class="s1">u&#39;Embarked&#39;</span><span class="p">]]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">u&#39;Survived&#39;</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">predict_2017_1_1_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticker</span><span class="p">):</span>
+    
+        <span class="n">df</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s1">&#39;x_0&#39;</span><span class="p">,</span> <span class="s1">&#39;x_1&#39;</span><span class="p">,</span> <span class="s1">&#39;x_2&#39;</span><span class="p">,</span> <span class="s1">&#39;x_3&#39;</span><span class="p">]]</span> 
+        <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> 
+        <span class="n">lm_LassoCV</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">LassoCV</span><span class="p">(</span><span class="n">alphas</span><span class="o">=</span><span class="p">[</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">])</span>
+        <span class="n">model_LassoCV</span> <span class="o">=</span> <span class="n">lm_LassoCV</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">predictions_LassoCV</span> <span class="o">=</span> <span class="n">model_LassoCV</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="c1">#plt.scatter(y, predictions_LassoCV)</span>
+    
+        <span class="k">return</span> <span class="n">X</span><span class="p">[</span><span class="s1">&#39;x_0&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">predictions_LassoCV</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>    <span class="c1">#returns 2014 price and 2017 predicted price</span>
+    
+    <span class="k">def</span> <span class="nf">predict_from_2014_to_2017</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stocks</span><span class="p">,</span><span class="n">investment</span><span class="p">):</span>
+        <span class="n">predicted_2017_investment</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">stocks</span><span class="p">:</span>
+            <span class="n">x_0</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predict_2017_1_1_price</span><span class="p">(</span><span class="n">ticker</span><span class="p">)</span>
+            <span class="n">predicted_2017_investment</span> <span class="o">+=</span><span class="p">(</span><span class="n">y</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">stocks</span><span class="p">)</span><span class="o">*</span><span class="n">investment</span><span class="p">)</span> 
 
-<span class="n">X_transf</span> <span class="o">=</span> <span class="n">union</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="n">X_transf</span>
+        <span class="k">return</span> <span class="n">predicted_2017_investment</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[43]:</div>
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>array([[-0.5924806 ,  0.        ,  0.        , ...,  1.        ,
-         1.        , -0.50244517],
-       [ 0.63878901,  1.        ,  0.        , ...,  0.        ,
-         0.        ,  0.78684529],
-       [-0.2846632 ,  0.        ,  0.        , ...,  1.        ,
-         0.        , -0.48885426],
-       ..., 
-       [ 0.        ,  0.        ,  0.        , ...,  1.        ,
-         0.        , -0.17626324],
-       [-0.2846632 ,  1.        ,  0.        , ...,  0.        ,
-         1.        , -0.04438104],
-       [ 0.17706291,  0.        ,  0.        , ...,  0.        ,
-         1.        , -0.49237783]])</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="1-Column-names">1 Column names<a class="anchor-link" href="#1-Column-names">&#182;</a></h2><p>Uh oh, we have lost the column names along the way! We need to manually add them:</p>
-<ul>
-<li>age_pipe =&gt; 'scaled_age'</li>
-<li>one_hot_pipe =&gt; 'Pclass_1', 'Pclass_2', 'Pclass_3', 'Embarked_C', 'Embarked_Q', 'Embarked_S'</li>
-<li>gender_pipe =&gt; 'male'</li>
-<li>fare_pipe =&gt; 'scaled_fare'</li>
-</ul>
-<p>Now we need to:</p>
-<ol>
-<li>Create a new pandas dataframe called <code>Xt</code> with the appropriate column names and fill it with the <code>X_transf</code> data.</li>
-<li>Notice that the current pipeline complitely discards the columns: u'SibSp', u'Parch'. Stack them as they are to the new dataframe</li>
-</ol>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[77]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;scaled_age&#39;</span><span class="p">,</span> <span class="s1">&#39;Pclass_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Pclass_2&#39;</span><span class="p">,</span> <span class="s1">&#39;Pclass_3&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;Embarked_C&#39;</span><span class="p">,</span> <span class="s1">&#39;Embarked_Q&#39;</span><span class="p">,</span> <span class="s1">&#39;Embarked_S&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;male&#39;</span><span class="p">,</span> <span class="s1">&#39;scaled_fare&#39;</span><span class="p">]</span>
-
-<span class="n">Xt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_transf</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">new_cols</span><span class="p">)</span>
-<span class="n">Xt</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">Xt</span><span class="p">,</span> <span class="n">X</span><span class="p">[[</span><span class="s1">u&#39;SibSp&#39;</span><span class="p">,</span> <span class="s1">u&#39;Parch&#39;</span><span class="p">]]],</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">Xt</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pr</span> <span class="o">=</span> <span class="n">TeamAPredictor</span><span class="p">()</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[77]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>scaled_age</th>
-      <th>Pclass_1</th>
-      <th>Pclass_2</th>
-      <th>Pclass_3</th>
-      <th>Embarked_C</th>
-      <th>Embarked_Q</th>
-      <th>Embarked_S</th>
-      <th>male</th>
-      <th>scaled_fare</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>-0.592481</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>1.0</td>
-      <td>-0.502445</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.638789</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.786845</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>-0.284663</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>-0.488854</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.407926</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.420730</td>
-      <td>1</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.407926</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>1.0</td>
-      <td>-0.486337</td>
-      <td>0</td>
-      <td>0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Feature-selection">2. Feature selection<a class="anchor-link" href="#2.-Feature-selection">&#182;</a></h2><p>Let's use the <code>SelectKBest</code> method in scikit learn to see which are the top 5 features.</p>
-<ul>
-<li>What are the top 5 features for <code>Xt</code>?</li>
-</ul>
-<p>=&gt; store them in a variable called <code>kbest_columns</code></p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[85]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">SelectKBest</span>
-<span class="kn">from</span> <span class="nn">sklearn.feature_selection</span> <span class="k">import</span> <span class="n">f_classif</span>
-<span class="n">selector</span> <span class="o">=</span> <span class="n">SelectKBest</span><span class="p">(</span><span class="n">f_classif</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-
-<span class="c1">#print(Xt.shape)</span>
-<span class="n">selected_data</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">kbest_columns</span> <span class="o">=</span> <span class="n">Xt</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">selector</span><span class="o">.</span><span class="n">get_support</span><span class="p">()]</span>
-<span class="c1">#print(selected_data.shape)</span>
-<span class="c1">#print(kbest_columns)</span>
-<span class="n">XtBest</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">selected_data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">kbest_columns</span><span class="p">)</span>
-<span class="n">XtBest</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">predict_from_2014_to_2017</span><span class="p">([</span><span class="s2">&quot;VIAB&quot;</span><span class="p">,</span><span class="s2">&quot;GOOG&quot;</span><span class="p">,</span><span class="s2">&quot;F&quot;</span><span class="p">,</span><span class="s2">&quot;MSFT&quot;</span><span class="p">],</span> <span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12024,561 +11874,88 @@ password: gastudents</code></pre>
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>(891, 11)
-(891, 5)
-Index([&#39;Pclass_1&#39;, &#39;Pclass_3&#39;, &#39;Embarked_C&#39;, &#39;male&#39;, &#39;scaled_fare&#39;], dtype=&#39;object&#39;)
-</pre>
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">KeyError</span>                                  Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-6-a7ae69373165&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>pr<span class="ansi-blue-fg">.</span>predict_from_2014_to_2017<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#34;VIAB&#34;</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#34;GOOG&#34;</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#34;F&#34;</span><span class="ansi-blue-fg">,</span><span class="ansi-blue-fg">&#34;MSFT&#34;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">10000</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">&lt;ipython-input-4-04d58c2abdfb&gt;</span> in <span class="ansi-cyan-fg">predict_from_2014_to_2017</span><span class="ansi-blue-fg">(self, stocks, investment)</span>
+<span class="ansi-green-intense-fg ansi-bold">     67</span>         predicted_2017_investment <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">0</span>
+<span class="ansi-green-intense-fg ansi-bold">     68</span>         <span class="ansi-green-fg">for</span> ticker <span class="ansi-green-fg">in</span> stocks<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">---&gt; 69</span><span class="ansi-red-fg">             </span>x_0<span class="ansi-blue-fg">,</span> y <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>predict_2017_1_1_price<span class="ansi-blue-fg">(</span>ticker<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     70</span>             predicted_2017_investment <span class="ansi-blue-fg">+=</span><span class="ansi-blue-fg">(</span>y<span class="ansi-blue-fg">/</span>float<span class="ansi-blue-fg">(</span>x_0<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">/</span>len<span class="ansi-blue-fg">(</span>stocks<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">*</span>investment<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     71</span> 
+
+<span class="ansi-green-fg">&lt;ipython-input-4-04d58c2abdfb&gt;</span> in <span class="ansi-cyan-fg">predict_2017_1_1_price</span><span class="ansi-blue-fg">(self, ticker)</span>
+<span class="ansi-green-intense-fg ansi-bold">     54</span>     <span class="ansi-green-fg">def</span> predict_2017_1_1_price<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> ticker<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">     55</span> 
+<span class="ansi-green-fg">---&gt; 56</span><span class="ansi-red-fg">         </span>df<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>get_data<span class="ansi-blue-fg">(</span>ticker<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     57</span>         X <span class="ansi-blue-fg">=</span> df<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;x_0&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;x_1&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;x_2&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;x_3&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">]</span>
+<span class="ansi-green-intense-fg ansi-bold">     58</span>         y <span class="ansi-blue-fg">=</span> df<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;y&#39;</span><span class="ansi-blue-fg">]</span>
+
+<span class="ansi-green-fg">&lt;ipython-input-4-04d58c2abdfb&gt;</span> in <span class="ansi-cyan-fg">get_data</span><span class="ansi-blue-fg">(self, ticker)</span>
+<span class="ansi-green-intense-fg ansi-bold">     24</span>         <span class="ansi-red-fg"># dropping unnecessary columns and setting the index as datetime</span>
+<span class="ansi-green-intense-fg ansi-bold">     25</span>         df <span class="ansi-blue-fg">=</span> df<span class="ansi-blue-fg">.</span>drop<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;Open&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;High&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;Low&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;Volume&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> axis<span class="ansi-blue-fg">=</span><span class="ansi-cyan-fg">1</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">---&gt; 26</span><span class="ansi-red-fg">         </span>df<span class="ansi-blue-fg">.</span>set_index<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;Date&#39;</span><span class="ansi-blue-fg">,</span> inplace<span class="ansi-blue-fg">=</span>True<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     27</span>         df<span class="ansi-blue-fg">.</span>index <span class="ansi-blue-fg">=</span> df<span class="ansi-blue-fg">.</span>index<span class="ansi-blue-fg">.</span>to_datetime<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     28</span> 
+
+<span class="ansi-green-fg">/Users/teresaborcuch/anaconda2/lib/python2.7/site-packages/pandas/core/frame.pyc</span> in <span class="ansi-cyan-fg">set_index</span><span class="ansi-blue-fg">(self, keys, drop, append, inplace, verify_integrity)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2835</span>                 names<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>None<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2836</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 2837</span><span class="ansi-red-fg">                 </span>level <span class="ansi-blue-fg">=</span> frame<span class="ansi-blue-fg">[</span>col<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>_values
+<span class="ansi-green-intense-fg ansi-bold">   2838</span>                 names<span class="ansi-blue-fg">.</span>append<span class="ansi-blue-fg">(</span>col<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2839</span>                 <span class="ansi-green-fg">if</span> drop<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/Users/teresaborcuch/anaconda2/lib/python2.7/site-packages/pandas/core/frame.pyc</span> in <span class="ansi-cyan-fg">__getitem__</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1995</span>             <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_getitem_multilevel<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1996</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 1997</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_getitem_column<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1998</span> 
+<span class="ansi-green-intense-fg ansi-bold">   1999</span>     <span class="ansi-green-fg">def</span> _getitem_column<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">,</span> key<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">/Users/teresaborcuch/anaconda2/lib/python2.7/site-packages/pandas/core/frame.pyc</span> in <span class="ansi-cyan-fg">_getitem_column</span><span class="ansi-blue-fg">(self, key)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2002</span>         <span class="ansi-red-fg"># get column</span>
+<span class="ansi-green-intense-fg ansi-bold">   2003</span>         <span class="ansi-green-fg">if</span> self<span class="ansi-blue-fg">.</span>columns<span class="ansi-blue-fg">.</span>is_unique<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 2004</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_get_item_cache<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   2005</span> 
+<span class="ansi-green-intense-fg ansi-bold">   2006</span>         <span class="ansi-red-fg"># duplicate columns &amp; possible reduce dimensionality</span>
+
+<span class="ansi-green-fg">/Users/teresaborcuch/anaconda2/lib/python2.7/site-packages/pandas/core/generic.pyc</span> in <span class="ansi-cyan-fg">_get_item_cache</span><span class="ansi-blue-fg">(self, item)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1348</span>         res <span class="ansi-blue-fg">=</span> cache<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1349</span>         <span class="ansi-green-fg">if</span> res <span class="ansi-green-fg">is</span> None<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 1350</span><span class="ansi-red-fg">             </span>values <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_data<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1351</span>             res <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>_box_item_values<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">,</span> values<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1352</span>             cache<span class="ansi-blue-fg">[</span>item<span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> res
+
+<span class="ansi-green-fg">/Users/teresaborcuch/anaconda2/lib/python2.7/site-packages/pandas/core/internals.pyc</span> in <span class="ansi-cyan-fg">get</span><span class="ansi-blue-fg">(self, item, fastpath)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3288</span> 
+<span class="ansi-green-intense-fg ansi-bold">   3289</span>             <span class="ansi-green-fg">if</span> <span class="ansi-green-fg">not</span> isnull<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 3290</span><span class="ansi-red-fg">                 </span>loc <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>item<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   3291</span>             <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">   3292</span>                 indexer <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>arange<span class="ansi-blue-fg">(</span>len<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">[</span>isnull<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>items<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">]</span>
+
+<span class="ansi-green-fg">/Users/teresaborcuch/anaconda2/lib/python2.7/site-packages/pandas/indexes/base.pyc</span> in <span class="ansi-cyan-fg">get_loc</span><span class="ansi-blue-fg">(self, key, method, tolerance)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1945</span>                 <span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_engine<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1946</span>             <span class="ansi-green-fg">except</span> KeyError<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">-&gt; 1947</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">return</span> self<span class="ansi-blue-fg">.</span>_engine<span class="ansi-blue-fg">.</span>get_loc<span class="ansi-blue-fg">(</span>self<span class="ansi-blue-fg">.</span>_maybe_cast_indexer<span class="ansi-blue-fg">(</span>key<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1948</span> 
+<span class="ansi-green-intense-fg ansi-bold">   1949</span>         indexer <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>get_indexer<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span>key<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">,</span> method<span class="ansi-blue-fg">=</span>method<span class="ansi-blue-fg">,</span> tolerance<span class="ansi-blue-fg">=</span>tolerance<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">pandas/index.pyx</span> in <span class="ansi-cyan-fg">pandas.index.IndexEngine.get_loc (pandas/index.c:4154)</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/index.pyx</span> in <span class="ansi-cyan-fg">pandas.index.IndexEngine.get_loc (pandas/index.c:4018)</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/hashtable.pyx</span> in <span class="ansi-cyan-fg">pandas.hashtable.PyObjectHashTable.get_item (pandas/hashtable.c:12368)</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-green-fg">pandas/hashtable.pyx</span> in <span class="ansi-cyan-fg">pandas.hashtable.PyObjectHashTable.get_item (pandas/hashtable.c:12322)</span><span class="ansi-blue-fg">()</span>
+
+<span class="ansi-red-fg">KeyError</span>: &#39;Date&#39;</pre>
 </div>
 </div>
 
-<div class="output_area"><div class="prompt output_prompt">Out[85]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Pclass_1</th>
-      <th>Pclass_3</th>
-      <th>Embarked_C</th>
-      <th>male</th>
-      <th>scaled_fare</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>-0.502445</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.786845</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>-0.488854</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>0.420730</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>0.0</td>
-      <td>1.0</td>
-      <td>-0.486337</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.-Recursive-Feature-Elimination">3. Recursive Feature Elimination<a class="anchor-link" href="#3.-Recursive-Feature-Elimination">&#182;</a></h2><p><code>Scikit Learn</code> also offers recursive feature elimination as a class named <code>RFECV</code>. Use it in combination with a logistic regression model to see what features would be kept with this method.</p>
-<p>=&gt; store them in a variable called <code>rfecv_columns</code></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[128]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># user logisticregression as an estimator</span>
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
-<span class="n">selector</span> <span class="o">=</span> <span class="n">RFECV</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">rfecv_columns</span> <span class="o">=</span> <span class="n">Xt</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">selector</span><span class="o">.</span><span class="n">support_</span><span class="p">]</span>
-<span class="n">rfecv_columns</span>
-<span class="n">help</span><span class="p">(</span><span class="n">RFECV</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Help on class RFECV in module sklearn.feature_selection.rfe:
-
-class RFECV(RFE, sklearn.base.MetaEstimatorMixin)
- |  Feature ranking with recursive feature elimination and cross-validated
- |  selection of the best number of features.
- |  
- |  Read more in the :ref:`User Guide &lt;rfe&gt;`.
- |  
- |  Parameters
- |  ----------
- |  estimator : object
- |      A supervised learning estimator with a `fit` method that updates a
- |      `coef_` attribute that holds the fitted parameters. Important features
- |      must correspond to high absolute values in the `coef_` array.
- |  
- |      For instance, this is the case for most supervised learning
- |      algorithms such as Support Vector Classifiers and Generalized
- |      Linear Models from the `svm` and `linear_model` modules.
- |  
- |  step : int or float, optional (default=1)
- |      If greater than or equal to 1, then `step` corresponds to the (integer)
- |      number of features to remove at each iteration.
- |      If within (0.0, 1.0), then `step` corresponds to the percentage
- |      (rounded down) of features to remove at each iteration.
- |  
- |  cv : int, cross-validation generator or an iterable, optional
- |      Determines the cross-validation splitting strategy.
- |      Possible inputs for cv are:
- |  
- |      - None, to use the default 3-fold cross-validation,
- |      - integer, to specify the number of folds.
- |      - An object to be used as a cross-validation generator.
- |      - An iterable yielding train/test splits.
- |  
- |      For integer/None inputs, if ``y`` is binary or multiclass,
- |      :class:`StratifiedKFold` used. If the estimator is a classifier
- |      or if ``y`` is neither binary nor multiclass, :class:`KFold` is used.
- |  
- |      Refer :ref:`User Guide &lt;cross_validation&gt;` for the various
- |      cross-validation strategies that can be used here.
- |  
- |  scoring : string, callable or None, optional, default: None
- |      A string (see model evaluation documentation) or
- |      a scorer callable object / function with signature
- |      ``scorer(estimator, X, y)``.
- |  
- |  estimator_params : dict
- |      Parameters for the external estimator.
- |      This attribute is deprecated as of version 0.16 and will be removed in
- |      0.18. Use estimator initialisation or set_params method instead.
- |  
- |  verbose : int, default=0
- |      Controls verbosity of output.
- |  
- |  Attributes
- |  ----------
- |  n_features_ : int
- |      The number of selected features with cross-validation.
- |  
- |  support_ : array of shape [n_features]
- |      The mask of selected features.
- |  
- |  ranking_ : array of shape [n_features]
- |      The feature ranking, such that `ranking_[i]`
- |      corresponds to the ranking
- |      position of the i-th feature.
- |      Selected (i.e., estimated best)
- |      features are assigned rank 1.
- |  
- |  grid_scores_ : array of shape [n_subsets_of_features]
- |      The cross-validation scores such that
- |      ``grid_scores_[i]`` corresponds to
- |      the CV score of the i-th subset of features.
- |  
- |  estimator_ : object
- |      The external estimator fit on the reduced dataset.
- |  
- |  Notes
- |  -----
- |  The size of ``grid_scores_`` is equal to ceil((n_features - 1) / step) + 1,
- |  where step is the number of features removed at each iteration.
- |  
- |  Examples
- |  --------
- |  The following example shows how to retrieve the a-priori not known 5
- |  informative features in the Friedman #1 dataset.
- |  
- |  &gt;&gt;&gt; from sklearn.datasets import make_friedman1
- |  &gt;&gt;&gt; from sklearn.feature_selection import RFECV
- |  &gt;&gt;&gt; from sklearn.svm import SVR
- |  &gt;&gt;&gt; X, y = make_friedman1(n_samples=50, n_features=10, random_state=0)
- |  &gt;&gt;&gt; estimator = SVR(kernel=&#34;linear&#34;)
- |  &gt;&gt;&gt; selector = RFECV(estimator, step=1, cv=5)
- |  &gt;&gt;&gt; selector = selector.fit(X, y)
- |  &gt;&gt;&gt; selector.support_ # doctest: +NORMALIZE_WHITESPACE
- |  array([ True,  True,  True,  True,  True,
- |          False, False, False, False, False], dtype=bool)
- |  &gt;&gt;&gt; selector.ranking_
- |  array([1, 1, 1, 1, 1, 6, 4, 3, 2, 5])
- |  
- |  References
- |  ----------
- |  
- |  .. [1] Guyon, I., Weston, J., Barnhill, S., &amp; Vapnik, V., &#34;Gene selection
- |         for cancer classification using support vector machines&#34;,
- |         Mach. Learn., 46(1-3), 389--422, 2002.
- |  
- |  Method resolution order:
- |      RFECV
- |      RFE
- |      sklearn.base.BaseEstimator
- |      sklearn.base.MetaEstimatorMixin
- |      sklearn.feature_selection.base.SelectorMixin
- |      abc.NewBase
- |      sklearn.base.TransformerMixin
- |      builtins.object
- |  
- |  Methods defined here:
- |  
- |  __init__(self, estimator, step=1, cv=None, scoring=None, estimator_params=None, verbose=0)
- |      Initialize self.  See help(type(self)) for accurate signature.
- |  
- |  fit(self, X, y)
- |      Fit the RFE model and automatically tune the number of selected
- |         features.
- |      
- |      Parameters
- |      ----------
- |      X : {array-like, sparse matrix}, shape = [n_samples, n_features]
- |          Training vector, where `n_samples` is the number of samples and
- |          `n_features` is the total number of features.
- |      
- |      y : array-like, shape = [n_samples]
- |          Target values (integers for classification, real numbers for
- |          regression).
- |  
- |  ----------------------------------------------------------------------
- |  Data and other attributes defined here:
- |  
- |  __abstractmethods__ = frozenset()
- |  
- |  ----------------------------------------------------------------------
- |  Methods inherited from RFE:
- |  
- |  decision_function(self, X)
- |      # lambda, but not partial, allows help() to work with update_wrapper
- |  
- |  predict(self, X)
- |      Reduce X to the selected features and then predict using the
- |         underlying estimator.
- |      
- |      Parameters
- |      ----------
- |      X : array of shape [n_samples, n_features]
- |          The input samples.
- |      
- |      Returns
- |      -------
- |      y : array of shape [n_samples]
- |          The predicted target values.
- |  
- |  predict_log_proba(self, X)
- |      # lambda, but not partial, allows help() to work with update_wrapper
- |  
- |  predict_proba(self, X)
- |      # lambda, but not partial, allows help() to work with update_wrapper
- |  
- |  score(self, X, y)
- |      Reduce X to the selected features and then return the score of the
- |         underlying estimator.
- |      
- |      Parameters
- |      ----------
- |      X : array of shape [n_samples, n_features]
- |          The input samples.
- |      
- |      y : array of shape [n_samples]
- |          The target values.
- |  
- |  ----------------------------------------------------------------------
- |  Methods inherited from sklearn.base.BaseEstimator:
- |  
- |  __repr__(self)
- |      Return repr(self).
- |  
- |  get_params(self, deep=True)
- |      Get parameters for this estimator.
- |      
- |      Parameters
- |      ----------
- |      deep: boolean, optional
- |          If True, will return the parameters for this estimator and
- |          contained subobjects that are estimators.
- |      
- |      Returns
- |      -------
- |      params : mapping of string to any
- |          Parameter names mapped to their values.
- |  
- |  set_params(self, **params)
- |      Set the parameters of this estimator.
- |      
- |      The method works on simple estimators as well as on nested objects
- |      (such as pipelines). The former have parameters of the form
- |      ``&lt;component&gt;__&lt;parameter&gt;`` so that it&#39;s possible to update each
- |      component of a nested object.
- |      
- |      Returns
- |      -------
- |      self
- |  
- |  ----------------------------------------------------------------------
- |  Data descriptors inherited from sklearn.base.BaseEstimator:
- |  
- |  __dict__
- |      dictionary for instance variables (if defined)
- |  
- |  __weakref__
- |      list of weak references to the object (if defined)
- |  
- |  ----------------------------------------------------------------------
- |  Methods inherited from sklearn.feature_selection.base.SelectorMixin:
- |  
- |  get_support(self, indices=False)
- |      Get a mask, or integer index, of the features selected
- |      
- |      Parameters
- |      ----------
- |      indices : boolean (default False)
- |          If True, the return value will be an array of integers, rather
- |          than a boolean mask.
- |      
- |      Returns
- |      -------
- |      support : array
- |          An index that selects the retained features from a feature vector.
- |          If `indices` is False, this is a boolean array of shape
- |          [# input features], in which an element is True iff its
- |          corresponding feature is selected for retention. If `indices` is
- |          True, this is an integer array of shape [# output features] whose
- |          values are indices into the input feature vector.
- |  
- |  inverse_transform(self, X)
- |      Reverse the transformation operation
- |      
- |      Parameters
- |      ----------
- |      X : array of shape [n_samples, n_selected_features]
- |          The input samples.
- |      
- |      Returns
- |      -------
- |      X_r : array of shape [n_samples, n_original_features]
- |          `X` with columns of zeros inserted where features would have
- |          been removed by `transform`.
- |  
- |  transform(self, X)
- |      Reduce X to the selected features.
- |      
- |      Parameters
- |      ----------
- |      X : array of shape [n_samples, n_features]
- |          The input samples.
- |      
- |      Returns
- |      -------
- |      X_r : array of shape [n_samples, n_selected_features]
- |          The input samples with only the selected features.
- |  
- |  ----------------------------------------------------------------------
- |  Methods inherited from sklearn.base.TransformerMixin:
- |  
- |  fit_transform(self, X, y=None, **fit_params)
- |      Fit to data, then transform it.
- |      
- |      Fits transformer to X and y with optional parameters fit_params
- |      and returns a transformed version of X.
- |      
- |      Parameters
- |      ----------
- |      X : numpy array of shape [n_samples, n_features]
- |          Training set.
- |      
- |      y : numpy array of shape [n_samples]
- |          Target values.
- |      
- |      Returns
- |      -------
- |      X_new : numpy array of shape [n_samples, n_features_new]
- |          Transformed array.
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-Logistic-regression-coefficients">4. Logistic regression coefficients<a class="anchor-link" href="#4.-Logistic-regression-coefficients">&#182;</a></h2><p>Let's see if the Logistic Regression coefficients correspond.</p>
-<ul>
-<li>Create a logistic regression model</li>
-<li>Perform grid search over penalty type and C strength in order to find the best parameters</li>
-<li>Sort the logistic regression coefficients by absolute value. Do the top 5 correspond to those above?<blockquote><p>Answer: Not completely. That could be due to scaling</p>
-</blockquote>
-</li>
-</ul>
-<p>=&gt; choose which ones you would keep and store them in a variable called <code>lr_columns</code></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[142]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#sklearn.model_selection.GridSearchCV</span>
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">grid_search</span>
-<span class="kn">from</span> <span class="nn">sklearn.grid_search</span> <span class="k">import</span> <span class="n">GridSearchCV</span>
-<span class="n">estimator</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
-<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">],</span><span class="s1">&#39;penalty&#39;</span><span class="p">:[</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span><span class="s1">&#39;l2&#39;</span><span class="p">]}</span>
-<span class="n">gcv</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-<span class="n">gcv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Xt</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-<span class="n">coeff3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gcv</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">Xt</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="n">coeff3</span>
-<span class="c1">#help(GridSearchCV)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[142]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>scaled_age</th>
-      <th>Pclass_1</th>
-      <th>Pclass_2</th>
-      <th>Pclass_3</th>
-      <th>Embarked_C</th>
-      <th>Embarked_Q</th>
-      <th>Embarked_S</th>
-      <th>male</th>
-      <th>scaled_fare</th>
-      <th>SibSp</th>
-      <th>Parch</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>-0.365079</td>
-      <td>0.853465</td>
-      <td>0.351926</td>
-      <td>-0.550361</td>
-      <td>0.358697</td>
-      <td>0.250084</td>
-      <td>-0.002806</td>
-      <td>-1.87419</td>
-      <td>0.222571</td>
-      <td>-0.230901</td>
-      <td>-0.010825</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-Compare-features-sets">5. Compare features sets<a class="anchor-link" href="#5.-Compare-features-sets">&#182;</a></h2><p>Use the <code>best estimator</code> from question 4 on the 3 different feature sets:</p>
-<ul>
-<li><code>kbest_columns</code></li>
-<li><code>rfecv_columns</code></li>
-<li><code>lr_columns</code></li>
-<li><code>all_columns</code></li>
-</ul>
-<p>Questions:</p>
-<ul>
-<li>Which scores the highest? (use cross_val_score)</li>
-<li>Is the difference significant?<blockquote><p>Answer: Not really</p>
-</blockquote>
-</li>
-<li>discuss in pairs</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Bonus">Bonus<a class="anchor-link" href="#Bonus">&#182;</a></h2><p>Use a bar chart to display the logistic regression coefficients. Start from the most negative on the left.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
 </div>
 </div>
 
