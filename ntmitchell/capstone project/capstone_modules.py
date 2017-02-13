@@ -32,7 +32,12 @@ class Production_Data(object):
             else:
                 self.production_by_ICO_category[category] = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"].drop("Attribute_Description", axis = 1)
         
-            
+    def find_ICO_category_of_country(self, country_name = None):
+        categories = list()
+        for ICO_category in self.countries_in_ICO_category.keys():
+            if country_name in self.countries_in_ICO_category[ICO_category]:
+                categories.append(ICO_category)
+        return categories    
         
     def get_countries_in_category(self, ICO_category = "Brazilian Naturals"):
         return self.countries_in_ICO_category[ICO_category]
@@ -44,4 +49,3 @@ class Production_Data(object):
     
     def get_ending_stocks(self, ICO_category = "Brazilian Naturals"):
         return self.ending_stock_by_ICO_category[ICO_category]
-    
