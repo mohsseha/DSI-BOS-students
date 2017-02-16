@@ -169,7 +169,7 @@ class Temperature_Data(object):
     
 # ------------------------- ICO Composite Indicator Data -------------------------
 
-class ICO_Composite_Indicator_Index(object):
+class ICO_Composite_Indicator(object):
     ICO_indicator_data = pandas.DataFrame()
     ICO_categories = ["Brazilian Naturals", "Colombian Milds", "Other Milds", "Robustas"]
     countries_in_ICO_category = dict.fromkeys(ICO_categories, None)
