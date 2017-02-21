@@ -15,6 +15,7 @@ class Production_Data(object):
     def __init__(self):
         self.production_data = pandas.read_csv("../datasets/capstone/coffee-production--USDA-FAS--psd_coffee.csv")
         self.production_data = self.production_data[["Country_Name", "Market_Year", "Attribute_Description", "Value"]]
+        self.production_data.columns = ["Country", "Market_Year", "Attribute_Description", "Value"]
         
         self.production_data.loc[:, "Value (60kg bags)"] = self.production_data.loc[:, "Value"] * 1000
         self.production_data.drop("Value", axis = 1, inplace = True)
@@ -24,7 +25,7 @@ class Production_Data(object):
         
         for category in self.ICO_categories:
             temp_dataframe = ICO_country_classifications[ICO_country_classifications[category]][["Country"]]
-            temp_dataframe = temp_dataframe.merge(self.production_data, left_on = "Country", right_on = "Country_Name").drop("Country_Name", axis = 1)
+            temp_dataframe = temp_dataframe.merge(self.production_data, on = "Country")
             
             self.countries_in_ICO_category[category] = temp_dataframe["Country"].unique().tolist()
             self.ending_stock_by_ICO_category[category] = temp_dataframe[temp_dataframe["Attribute_Description"] == "Ending Stocks"].drop("Attribute_Description", axis = 1)
@@ -50,7 +51,11 @@ class Production_Data(object):
         return self.production_by_ICO_category[ICO_category].groupby(by = "Market_Year")["Value (60kg bags)"].sum()
     
     def get_ending_stocks_by_ICO_category(self, ICO_category = "Brazilian Naturals"):
-        return self.ending_stock_by_ICO_category[ICO_category]
+        temp_dataframe = self.ending_stock_by_ICO_category[ICO_category]
+        for country in temp_dataframe["Country"].unique():
+            temp_dataframe.ix[temp_dataframe["Country"] == country, "Percent Change"] = temp_dataframe[temp_dataframe["Country"] == country]["Value (60kg bags)"].pct_change()
+        
+        return temp_dataframe
     
     def get_production_share_by_country(self, country_or_category = "All"):
         
@@ -65,21 +70,21 @@ class Production_Data(object):
         if country_or_category in self.ICO_categories:
             results = []
             for country in self.countries_in_ICO_category[country_or_category]:
-                temp_dataframe = self.production_data[(self.production_data["Country_Name"] == country) 
+                temp_dataframe = self.production_data[(self.production_data["Country"] == country) 
                                                       & ((self.production_data["Attribute_Description"] == "Arabica Production") 
                                                          | (self.production_data["Attribute_Description"] == "Robusta Production"))]
 
                 scaled_arabica_production = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"]["Value (60kg bags)"] / temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"]["Market_Year"].map(total_arabica_production)
                 scaled_arabica_production_dataframe = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"].drop(["Attribute_Description", "Value (60kg bags)"], axis = 1 )
                 scaled_arabica_production_dataframe = pandas.concat([scaled_arabica_production_dataframe, scaled_arabica_production], axis = 1)
-                scaled_arabica_production_dataframe.columns = ["Country_Name", "Market_Year", "Arabica Production Share"]
+                scaled_arabica_production_dataframe.columns = ["Country", "Market_Year", "Arabica Production Share"]
 
                 scaled_robusta_production = temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"]["Value (60kg bags)"] / temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"]["Market_Year"].map(total_robusta_production)
                 scaled_robusta_production_dataframe = temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"].drop(["Attribute_Description", "Value (60kg bags)"], axis = 1 )
                 scaled_robusta_production_dataframe = pandas.concat([scaled_robusta_production_dataframe, scaled_robusta_production], axis = 1)
-                scaled_robusta_production_dataframe.columns = ["Country_Name", "Market_Year", "Robusta Production Share"]
+                scaled_robusta_production_dataframe.columns = ["Country", "Market_Year", "Robusta Production Share"]
 
-                temp_dataframe = scaled_arabica_production_dataframe.merge(scaled_robusta_production_dataframe, on = ["Country_Name", "Market_Year"])
+                temp_dataframe = scaled_arabica_production_dataframe.merge(scaled_robusta_production_dataframe, on = ["Country", "Market_Year"])
                 results.append(temp_dataframe)
 
             return(pandas.concat(results, ignore_index=True))
@@ -92,34 +97,34 @@ class Production_Data(object):
             scaled_arabica_production = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"]["Value (60kg bags)"] / temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"]["Market_Year"].map(total_arabica_production)
             scaled_arabica_production_dataframe = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"].drop(["Attribute_Description", "Value (60kg bags)"], axis = 1 )
             scaled_arabica_production_dataframe = pandas.concat([scaled_arabica_production_dataframe, scaled_arabica_production], axis = 1)
-            scaled_arabica_production_dataframe.columns = ["Country_Name", "Market_Year", "Arabica Production Share"]
+            scaled_arabica_production_dataframe.columns = ["Country", "Market_Year", "Arabica Production Share"]
 
             scaled_robusta_production = temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"]["Value (60kg bags)"] / temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"]["Market_Year"].map(total_robusta_production)
             scaled_robusta_production_dataframe = temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"].drop(["Attribute_Description", "Value (60kg bags)"], axis = 1 )
             scaled_robusta_production_dataframe = pandas.concat([scaled_robusta_production_dataframe, scaled_robusta_production], axis = 1)
-            scaled_robusta_production_dataframe.columns = ["Country_Name", "Market_Year", "Robusta Production Share"]
+            scaled_robusta_production_dataframe.columns = ["Country", "Market_Year", "Robusta Production Share"]
 
-            temp_dataframe = scaled_arabica_production_dataframe.merge(scaled_robusta_production_dataframe, on = ["Country_Name", "Market_Year"])
+            temp_dataframe = scaled_arabica_production_dataframe.merge(scaled_robusta_production_dataframe, on = ["Country", "Market_Year"])
             return temp_dataframe
         
         else:        
             results = []
-            for country in self.production_data["Country_Name"].unique():
-                temp_dataframe = self.production_data[(self.production_data["Country_Name"] == country) 
+            for country in self.production_data["Country"].unique():
+                temp_dataframe = self.production_data[(self.production_data["Country"] == country) 
                                                       & ((self.production_data["Attribute_Description"] == "Arabica Production") 
                                                          | (self.production_data["Attribute_Description"] == "Robusta Production"))]
 
                 scaled_arabica_production = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"]["Value (60kg bags)"] / temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"]["Market_Year"].map(total_arabica_production)
                 scaled_arabica_production_dataframe = temp_dataframe[temp_dataframe["Attribute_Description"] == "Arabica Production"].drop(["Attribute_Description", "Value (60kg bags)"], axis = 1 )
                 scaled_arabica_production_dataframe = pandas.concat([scaled_arabica_production_dataframe, scaled_arabica_production], axis = 1)
-                scaled_arabica_production_dataframe.columns = ["Country_Name", "Market_Year", "Arabica Production Share"]
+                scaled_arabica_production_dataframe.columns = ["Country", "Market_Year", "Arabica Production Share"]
 
                 scaled_robusta_production = temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"]["Value (60kg bags)"] / temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"]["Market_Year"].map(total_robusta_production)
                 scaled_robusta_production_dataframe = temp_dataframe[temp_dataframe["Attribute_Description"] == "Robusta Production"].drop(["Attribute_Description", "Value (60kg bags)"], axis = 1 )
                 scaled_robusta_production_dataframe = pandas.concat([scaled_robusta_production_dataframe, scaled_robusta_production], axis = 1)
-                scaled_robusta_production_dataframe.columns = ["Country_Name", "Market_Year", "Robusta Production Share"]
+                scaled_robusta_production_dataframe.columns = ["Country", "Market_Year", "Robusta Production Share"]
 
-                temp_dataframe = scaled_arabica_production_dataframe.merge(scaled_robusta_production_dataframe, on = ["Country_Name", "Market_Year"])
+                temp_dataframe = scaled_arabica_production_dataframe.merge(scaled_robusta_production_dataframe, on = ["Country", "Market_Year"])
                 results.append(temp_dataframe)
 
             return(pandas.concat(results, ignore_index=True))
