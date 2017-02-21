@@ -15,5 +15,5 @@
 |Antonio Pasciuto     | apasciuto   |[apasciuto](https://apasciuto.github.io)  |
 |Steve Shepherd       | dfoshep     |                                          |
 |Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)|
-|James Wedell         | wedelljd    |                                          |
+|James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     |
 |Teresa Borcuch|teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|
