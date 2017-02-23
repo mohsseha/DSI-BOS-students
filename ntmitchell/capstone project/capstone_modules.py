@@ -128,6 +128,16 @@ class Production_Data(object):
                 results.append(temp_dataframe)
 
             return(pandas.concat(results, ignore_index=True))
+        
+        
+    def get_production_share_dictionary(self):
+
+        production_share = self.get_production_share_by_country()
+        production_share.columns = ["Country", "Market_Year", "Arabica", "Robusta"]
+        production_share_dictionary = pandas.pivot_table(production_share, index = ["Market_Year"], columns = ["Country"]).to_dict()
+
+        return production_share_dictionary
+    
     
 # ------------------------- Weather Data -------------------------
     
@@ -170,6 +180,10 @@ class Temperature_Data(object):
             return results_dataframe[results_dataframe["Arabica Production"] == True]
         else:
             return results_dataframe[results_dataframe["Robusta Production"] == True]
+        
+    def get_temperature_data_by_country(self, country = "Brazil"):
+        results_dataframe = self.temperature_data[self.temperature_data["Country"] == country]
+        return results_dataframe
     
     
 # ------------------------- ICO Composite Indicator Data -------------------------
