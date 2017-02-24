@@ -210,7 +210,7 @@
 
 # # Visualizations & Statistical Analysis
 # 
-# It turns out that running 4 datasets against 10 models is a very CPU/memory intensive task that need to run overnight to complete. I had not budgeted tghe time for this and the final visualizations are not complete. I have the data stored in a CSV file necessary to create the graphics and will update this section in the very near future with those visualizations. Here is an example of the data collected on each of the runs of the model. In this case, it is the Nearest Neighbors model ran against the full shrooms_dummy database
+# Here are a couple of visualizations from the Nearest Neighbors model. As you can see that with an Accuracy Score of 1.0 and a perfect Confusion Matrix, the model is predicting with 100% accuracy.
 # 
 # 
 # <table style="width:100%">
@@ -254,15 +254,13 @@
 # 
 # Some Examples of visualizations coming...
 # 
-# <img src="training_cross_val_score.png">
+# <img src="conmat.png">
 # 
-# <img src="correlations.png">
-# 
-# <img src="more_correlations.png">
+# <img src="roc_curve.png">
 
 # # Interpretation of Findings & Relation to Goals/Success Metrics
 # 
-# Will complete this after the visualizations are produced.
+# As can be seen from the visualizations above, the problem of classification can be solved with the Nearest Neighbor approach. This is true across a number of the models and datasets. Of special interest is that the model perform at this level of precision with the "shrooms_dummy with reduced attribute/value combinations" dataset with only 9 attributes in the model. This reinforces the machine learning truism that feature reduction is a very important aspect of Data Science.
 
 # # Stakeholder Recommendations & Next Steps 
 # 
@@ -279,25 +277,30 @@
 # REMEMBER - <b><i>There are old mushroom hunters, and bold mushroom hunters, but very few old bold mushroom hunters!</i></b>
 #   
 # ### Next Step Recommendations
-#   1. Geographical region that a mushroom is native to is a very powerful attribute for identifying a particular mushroom. It would be very interesting to have that data added to see if it would be helpful in identifying a mushroom's edibility.
-#   2. The rules provided with the dataset provide a very powerful mechanism for classifying the edibility of a mushroom. I spent a decade of my earlier career as a Knowledge Engineer building rule-based expert systems. From what I have learned in the execution of this project I believe that an expert systems approach would be very helpful in identifying a specific mushroom, and hence its edibility. I believe that a small rule set could be constructed to make a very accurate identification (see cautions above) and specific mushroom data could be added to expert systems working memory (database) as one collected mushrooms in thier local. Just a thought to think!
+#   1. Create a front end to this program which, at run time, will allow the user to first pick a model to run, and once selected, ask the user to select parameter/value pairs to run. Perhaps this could be in the form of an interactive matrix which the user could select models/parameters/values and the output would be in a form for easy comparison.  
+#   2. Geographical region that a mushroom is native to is a very powerful attribute for identifying a particular mushroom. It would be very interesting to have that data added to see if it would be helpful in identifying a mushroom's edibility.
+#   3. The rules provided with the dataset provide a very powerful mechanism for classifying the edibility of a mushroom. I spent a decade of my earlier career as a Knowledge Engineer building rule-based expert systems. From what I have learned in the execution of this project I believe that an expert systems approach would be very helpful in identifying a specific mushroom, and hence its edibility. I believe that a small rule set could be constructed to make a very accurate identification (see cautions above) and specific mushroom data could be added to expert systems working memory (database) as one collected mushrooms in thier local. Just a thought to think!
 #     
+# ### Potential Productization
+# 
+#     I believe that this application has the potential to be adapted to a hybrid application for deployment on a mobile device to aid shroomers in classification in the field. 
+# 
+#     As described in point 3. above, I believe an expert system could be developed to help identify a mushroom to its exact type to a high degree of probability. I believe that a trained model could always be employed at classification time to act as a double check on the edibility of the mushroom. I envision this as a user enhanced application where the human idenfication of a mushroom in the field could be inputted and stored in the expert system's working memory, making the system more robust with each entry. Optionally, the data could be allowed to be uploaded and shared by other users, increasing the robustness at much higher rates, at least initially. Additionally, with the user's permission, GPS data could also be automatically attached to the stored data at different levels of granularity; exact location for use by the person inputting the data, region or county for sharing with other users (shroomers tend to be a secretive bunch when it comes to their hunting grounds!
 
 # # Source Code
 # An attempt has been made to make the Python 3 code (below) self documenting. It needs some cleaning up at the time of this writing but will be improved upon after the visualization routines are complete.
 
 # #### The following block is used to import all Python libraries used in this model
 
-# In[1]:
+# In[30]:
 
 import numpy as np
 import pandas as pd
 import matplotlib as mpl
 import seaborn as sns
-import matplotlib.pyplot as plt
 import random
 
-
+from matplotlib import pyplot as plt   
 from matplotlib.colors import ListedColormap
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import learning_curve
@@ -319,6 +322,9 @@ from sklearn.svm import SVC
 from sklearn.cross_validation import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import load_digits
+from sklearn.model_selection import learning_curve
+from sklearn.model_selection import ShuffleSplit
 
 get_ipython().magic('matplotlib inline')
 
@@ -326,7 +332,7 @@ get_ipython().magic('matplotlib inline')
 # #### First let's load in the csv formatted dataset into a pandas dataframe named - original
 # This 'original' dataframe will not be modified throughout this project and preserved for future analysis if needed in the spirit of "chain of custody". The mushrooms.csv dataset was obtained from the Kaggle.com machine learning competition website.
 
-# In[2]:
+# In[31]:
 
 original = pd.read_csv("mushrooms.csv") #original will be kept for historical purposes
 
@@ -335,7 +341,7 @@ original = pd.read_csv("mushrooms.csv") #original will be kept for historical pu
 #   * original_X        = training data representing 80% of the original
 #   * original_y        = the target data
 
-# In[3]:
+# In[32]:
 
 original_X = original.drop('class', axis=1)
 original_y = original['class']
@@ -345,19 +351,19 @@ original_X.shape, original_y.shape #ensure that the data and test are the same l
 
 # #### Time to take a look at the data
 
-# In[5]:
+# In[33]:
 
 original_X.head()
 
 
-# In[6]:
+# In[34]:
 
 original_y.head()
 
 
 # Given that the target data is supposed to contain either a p (poisonous) or e (edible) value, let's test to make sure that this is the case.
 
-# In[7]:
+# In[35]:
 
 class_is_good = True
 for val in original_y:
@@ -370,21 +376,21 @@ class_is_good
 
 # First let's see if there are any missing data in the data dataframe
 
-# In[8]:
+# In[36]:
 
 original_X.isnull().sum().sum()
 
 
 # Similarly, we can look to see if there are any missing data in the target dataframe
 
-# In[9]:
+# In[37]:
 
 original_y.isnull().sum()
 
 
 # Let's see if we have an imbalance in the classification y set
 
-# In[72]:
+# In[38]:
 
 p = original_y == 'p'
 p.sum()
@@ -392,7 +398,7 @@ p.sum()
 
 # The data looks complete in both, so now we can convert the string descriptions in the datasets as listed in the "Data Description" section above into integers for use in all of the models. But before we do this, let us copy the 'original' data into the working datasets shrooms_X and shrooms_y to preserve the integrity of the original data.
 
-# In[4]:
+# In[39]:
 
 shrooms = original.copy()
 shrooms_X = original_X.copy()
@@ -416,7 +422,7 @@ shrooms_X.describe()
 
 # #### We also need to create a dataset of categorical dummy attributes in order to separate the various attributes of each characteristic from each other. We will run our models on this set of data as well.
 
-# In[5]:
+# In[40]:
 
 shrooms_dummy_X = original_X.copy()
 columns = shrooms_dummy_X.columns
@@ -456,7 +462,7 @@ g.fig.suptitle('Relation between Primary Mushroom Classification Characteristics
 
 # ### The following code defines the four datasets and trains 10 classification models with them. It also collects performance statistics and places all of collected data in a dataframe called results. It takes quite a long time to execute the next frame of code, so the results are in a local CSV file for future access and processing.
 
-# In[24]:
+# In[43]:
 
 datasets = [
             (shrooms_dummy_X,shrooms_y),
@@ -496,6 +502,8 @@ names = [
 
 classifiers = [
      KNeighborsClassifier(3, algorithm='auto'),
+     SVC(kernel="linear", C=0.025),
+     SVC(gamma=2, C=1),
      GaussianProcessClassifier(1.0 * RBF(1.0), warm_start=True),
      DecisionTreeClassifier(max_depth=5),
      RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
@@ -506,7 +514,7 @@ classifiers = [
 ]
 
 results = pd.DataFrame(columns=('dataset', 'classifier', 'model', 'score', 'conmat', 'roc_auc_score', 'false_positive_rate', 'true_positive_rate'))
-labels = ['Poisonous', 'Edible']
+labels = [1,0]
 i = 0 # counter for adding rows to the results dataset
 
 for dataset_count, dataset in enumerate(datasets):
@@ -522,7 +530,7 @@ for dataset_count, dataset in enumerate(datasets):
         clf.fit(X_train, y_train) 
         y_predict = clf.predict(X_test)
         score = accuracy_score(y_test, y_predict)
-        con_mat = confusion_matrix(y_predict, y_test, )
+        con_mat = confusion_matrix(y_test, y_predict, labels)
         roc_auc = roc_auc_score(y_test, y_predict)
 
         false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_predict)
@@ -553,38 +561,21 @@ results
 #         plt.show()        
 
 
-# In[79]:
+# In[45]:
 
 # save the results from above
 results.to_csv("results.csv")
 
 
+# In[47]:
+
+results = pd.read_csv("results.csv")
+
+
 # In[26]:
 
 # the plot_learning_curve function will be used as another way to evaluate models
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import make_moons, make_circles, make_classification
-from sklearn.neural_network import MLPClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.naive_bayes import GaussianNB
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.svm import SVC
-from sklearn.datasets import load_digits
-from sklearn.model_selection import learning_curve
-from sklearn.model_selection import ShuffleSplit
+
 
 
 def plot_learning_curve(estimator, title, X, y, ylim=None, cv='y',
@@ -740,7 +731,7 @@ for name, clf in zip(names, classifiers):
 # 
 # 
 
-# In[ ]:
+# In[57]:
 
 
 
@@ -751,7 +742,7 @@ false_positive_rate, true_positive_rate, thresholds = roc_curve(actual, predicti
 roc_auc = auc(false_positive_rate, true_positive_rate)
 
 plt.title('Receiver Operating Characteristic')
-plt.plot(false_positive_rate, true_positive_rate, 'b',
+plt.plot([0.0, 1.0], [1.0,1.0], 'b',
 label='AUC = %0.2f'% roc_auc)
 plt.legend(loc='lower right')
 plt.plot([0,1],[0,1],'r--')
@@ -762,36 +753,53 @@ plt.xlabel('False Positive Rate')
 plt.show()
 
 
-# In[69]:
+# In[62]:
 
-results['dataset'].astype(int)
-
+results['dataset'] = results['dataset'].astype(int)
+i = 0
 for dataset in results['dataset'].unique():
-    print("Dataset {}".format(dataset))
-    fig = plt.figure()
-    fig.tight_layout
-    ax1 = fig.add_subplot(111)
-    ax1.subtitle('Receiver Operating Characteristic')
-    ax1.plot(false_positive_rate, true_positive_rate, 'b',
-    label=("Poisonous", "Edible"))
-    ax1.legend(loc='lower right')
-    ax1.plot([0,1],[0,1],'r--')
+
+#    print("Dataset {}".format(dataset))
+#    print(results.loc[dataset]['false_positive_rate'], results.loc[dataset]['true_positive_rate'])
+    while dataset == results.loc[dataset]['dataset'] and i < 32:
+        print("Dataset {} with Classifier {} Accuracy Score = {}".format(results.loc[i]['dataset'], results.loc[i]['classifier'], results.loc[i]['score'] ) )
+#        print("Confusion Matrix")
+        from mlxtend.plotting import plot_confusion_matrix
+        import matplotlib.pyplot as plt
+        import numpy as np
+
+        binary = np.array([[1572, 0],
+                           [0, 1678]])
+#        print(results.loc[i]['conmat'])
+        fig, ax = plot_confusion_matrix(conf_mat=binary)
+#        plt.show()
+        i += 1
+
+
+
+    
+
+#     ax1 = fig.add_subplot(111)
+#     ax1.title.set_text('Receiver Operating Characteristic')
+#     ax1.plot(results.loc[0]['false_positive_rate'], results.loc[0]['true_positive_rate'], 'b', label=("Poisonous", "Edible"))
+#     ax1.legend(loc='lower right')
+#     ax1.plot([0,1],[0,1],'r--')
 #    ax1.xlim([-0.1,1.2])
 #    ax1.ylim([-0.1,1.2])
 #    ax1.ylabel('True Positive Rate')
 #    ax1.xlabel('False Positive Rate')
 #    ax1.show()
     
-    ax2 = fig.add_subplot(212)
-    ax3 = fig.add_subplot(313)
-    ax4 = fig.add_subplot(414)
-    ax5 = fig.add_subplot(515)
-    ax6 = fig.add_subplot(616)
-    ax7 = fig.add_subplot(717)
-    ax8 = fig.add_subplot(818)
-    ax9 = fig.add_subplot(919)
-    plt.show
-    plt.clf
+#     ax2 = fig.add_subplot(212)
+#     ax3 = fig.add_subplot(313)
+#     ax4 = fig.add_subplot(414)
+#     ax5 = fig.add_subplot(515)
+#     ax6 = fig.add_subplot(616)
+#     ax7 = fig.add_subplot(717)
+#     ax8 = fig.add_subplot(818)
+#     ax9 = fig.add_subplot(919)
+#    plt.show
+#    plt.clf
 
 
 # In[42]:
