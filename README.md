@@ -9,7 +9,7 @@
 |Pat Parker-Roach     | pparker-roach|[pparker-roach](https://pparker-roach.github.io)|x|
 |Greg MacLennan       | gmaclenn    |[gmaclenn](https://gmaclenn.github.io)    |x |
 |Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    | x|
-|Antonio Pasciuto     | apasciuto   |[apasciuto](mailto:assistance@apasciuto@outlook.com)  | x|
+|Antonio Pasciuto     | apasciuto   |[apasciuto](mailto:apasciuto@outlook.com)  | x|
 |Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)| x|
 |James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     | x|
 |Teresa Borcuch       |teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)| x|
