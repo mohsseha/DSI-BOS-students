@@ -10,7 +10,7 @@
 |Greg MacLennan       | gmaclenn    |[gmaclenn](https://gmaclenn.github.io)    |x |
 |Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    | x|
 |Antonio Pasciuto     | apasciuto   |[apasciuto](https://apasciuto.github.io)  | x|
-|Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)| x|
+|Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)| [ntmitchell](https://profiles.generalassemb.ly/nathan-mitchell)|
 |James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     | x|
 |Teresa Borcuch       |teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)| x|
 
