@@ -11,7 +11,7 @@
 |Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    | x|
 |Antonio Pasciuto     | apasciuto   |[apasciuto](https://apasciuto.github.io)  | x|
 |Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)| [ntmitchell](https://profiles.generalassemb.ly/nathan-mitchell)|
-|James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     | x|
+|James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     |[jameswedell(https://profiles.generalassemb.ly/profiles/7405)|
 |Teresa Borcuch       |teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|[teresaborcuch](https://profiles.generalassemb.ly/teresaborcuch)|
 
 ## Instructors:
