@@ -5,13 +5,13 @@
 
 |Name                 | Work Folder | Blog                                  | GA Profile|
 |---------------------|-------------|---------------------------------------|-----------|
-|Karthik Venkataraman | karthik-33  |[karthik-33](https://karthik-33.github.io)|X|
+|Karthik Venkataraman | karthik-33  |[karthik-33](https://karthik-33.github.io)|[karthik33](https://profiles.generalassemb.ly/profiles/karthik33)|
 |Pat Parker-Roach     | pparker-roach|[pparker-roach](https://pparker-roach.github.io)|x|
 |Greg MacLennan       | gmaclenn    |[gmaclenn](https://gmaclenn.github.io)    |x |
 |Christopher Madsen   | cjmadsen    |[cjmadsen](https://cjmadsen.github.io)    | x|
 |Antonio Pasciuto     | apasciuto   |[apasciuto](https://apasciuto.github.io)  | x|
 |Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)| [ntmitchell](https://profiles.generalassemb.ly/nathan-mitchell)|
-|James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     |[jameswedell](https://profiles.generalassemb.ly/profiles/7405)|
+|James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     | x|
 |Teresa Borcuch       |teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|[teresaborcuch](https://profiles.generalassemb.ly/teresaborcuch)|
 
 ## Instructors:
