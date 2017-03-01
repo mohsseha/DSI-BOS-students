@@ -12,7 +12,7 @@
 |Antonio Pasciuto     | apasciuto   |[apasciuto](https://apasciuto.github.io)  | x|
 |Nathan Mitchell      | ntmitchell  |[ntmitchell](https://ntmitchell.github.io)| [ntmitchell](https://profiles.generalassemb.ly/nathan-mitchell)|
 |James Wedell         | wedelljd    |[jwedell](https://wedelljd.github.io)     | x|
-|Teresa Borcuch       |teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)| x|
+|Teresa Borcuch       |teresaborcuch |[teresaborcuch](https://teresaborcuch.github.io)|[teresaborcuch](https://profiles.generalassemb.ly/teresaborcuch)|
 
 ## Instructors:
 |Name                 | Work Folder | Blog                                  |
