@@ -4,6 +4,7 @@
 ## Graduates:
 
 |Name                 | Work Folder | Blog                                  | GA Profile|
+|---------------------|-------------|---------------------------------------|-----------|
 |Karthik Venkataraman | karthik-33  |[karthik-33](https://karthik-33.github.io)|[karthik33](https://profiles.generalassemb.ly/profiles/karthik33)|
 |Pat Parker-Roach     | pparker-roach|[pparker-roach](https://pparker-roach.github.io)|[pparker-roach](https://profiles.generalassemb.ly/profiles/patrick-parker-roach)|
 |Greg MacLennan       | gmaclenn    |[gmaclenn](https://gmaclenn.github.io)    |[gmaclenn](https://profiles.generalassemb.ly/profiles/gmaclenn) |
@@ -15,5 +16,6 @@
 
 ## Instructors:
 |Name                 | Work Folder | Blog                                  |
+|---------------------|-------------|---------------------------------------|-----------: |
 |Husain Al-Mohssen    | mohsseha    |[mohsseha](https://mohsseha.github.io)    |
 |Tim Hogan            | tmh8195     |[linkedin](https://www.linkedin.com/in/hogantimothy/)|
