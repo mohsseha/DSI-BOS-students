@@ -16,6 +16,6 @@
 
 ## Instructors:
 |Name                 | Work Folder | Blog                                  |
-|---------------------|-------------|---------------------------------------|-----------: |
+|---------------------|-------------|---------------------------------------|
 |Husain Al-Mohssen    | mohsseha    |[mohsseha](https://mohsseha.github.io)    |
 |Tim Hogan            | tmh8195     |[linkedin](https://www.linkedin.com/in/hogantimothy/)|
