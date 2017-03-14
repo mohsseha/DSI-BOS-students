@@ -6,7 +6,7 @@ This is a summary of the materials provided for Week 1 of the Data Science Immer
 
 Session Time  | Day 1  | Day 2      | Day 3      | Day 4     | Day 5
 --------- | ---------  | ---------  | ---------  | --------- | ---------
-9 - 10    |[+Welcome to Data Science!][1-1A]      | [+Morning Exercise][1-2A]        | [#Outcomes][1-3A]               | [+Morning Exercise][1-4A]                |[Reflection][1-5A]|          
+9 - 10    |[+Welcome to Data Science!][1-1A]      | [+Morning Exercise][1-2A]        | [#Outcomes][1-3A]               | [+Morning Exercise][1-4A]                |[Reflection][1-5A]         
 10 - 11:30  |[Command Line][1-1B]         | [Python Control Flow][1-2B]              | [Programming Fundamentals][1-3B]        | [Arrays & Functions][1-4B]                   | [Plotting tools intro][1-5B]
 11:30 - 1  |[Intro to Git][1-1C]          | [Lab: Python function practice][1-2C]    | [Notebooks & CSV Files][1-3C]           | [Lab: NumPy][1-4C]                           | [Lab: Plotting][1-5C]
 2 - 3:30  |[Python Data Types][1-1D]      | [Python Iteration][1-2D]                 | [Intro to NumPy][1-3D]                  | [Lab: Stats practice with Python][1-4D]      | [+Instructor choice][1-5D]
